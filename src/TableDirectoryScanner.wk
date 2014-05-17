@@ -1,7 +1,7 @@
 import FilePath;
 import File;
 
-every TableFileScanner is:
+every TableDirectoryScanner is:
 
 	File[] -- scan(FilePath) {
 		var FilePath[] children = FilePath.getChildren();
