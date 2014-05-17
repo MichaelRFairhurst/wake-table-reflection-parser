@@ -1,0 +1,17 @@
+import WakeType;
+import Map;
+
+every WakeClass is:
+
+	needs public Map{Text, WakeType} properties,
+		public Map{Text, Num} propertyFlags,
+		public Map{Text, Text} propertyCasings;
+
+	with public Bool isAbstract = false;
+	with public Text classname = "";
+	with public WakeType[] needTypes = [];
+	with public WakeType[] parameters = [];
+	with public WakeType[] appliedParameters = [];
+
+	with public Text? parentclass = nothing;
+	with public Text[] interfaces = [];
