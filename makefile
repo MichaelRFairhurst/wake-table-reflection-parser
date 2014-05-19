@@ -1,6 +1,6 @@
 PROGRAM := your-program-name
-LIBRARYFILES := ../compiler/bin/wakeobj/std.o
-LIBRARYTABLES := $(filter-out $(wildcard ../compiler/bin/waketable/*Test.table), $(wildcard ../compiler/bin/waketable/*.table) )
+LIBRARYFILES := ../compiler/bin/wakeobj/std.o ../std/bin/wakeobj/Map.o
+LIBRARYTABLES := $(filter-out $(wildcard ../compiler/bin/waketable/*Test.table), $(wildcard ../compiler/bin/waketable/*.table) ) ../std/bin/waketable/Map.table
 TESTLIBRARYFILES := ../wUnit/bin/wakeobj/Asserts.o ../wUnit/bin/wakeobj/TestResultReporter.o
 
 TABLEDIR := bin/waketable
