@@ -9,3 +9,15 @@ every WakeType is:
 	with public WakeType[] arguments = [];
 	with public WakeType? upperbound = nothing;
 	with public WakeType? lowerbound = nothing;
+
+	Text -- getDeclarableName() {
+		return "Blah";
+	}
+
+	Text -- getPureName() {
+		return "Blah";
+	}
+
+	Text -- getImportName() {
+		return "blah";
+	}
