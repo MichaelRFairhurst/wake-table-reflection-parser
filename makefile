@@ -1,4 +1,6 @@
-PROGRAM := your-program-name
+PROGRAM := table-file-parser
+EXECUTABLE := false
+
 LIBRARYFILES := ../compiler/bin/wakeobj/std.o ../std/bin/wakeobj/Map.o
 LIBRARYTABLES := $(filter-out $(wildcard ../compiler/bin/waketable/*Test.table), $(wildcard ../compiler/bin/waketable/*.table) ) ../std/bin/waketable/Map.table
 TESTLIBRARYFILES := ../wUnit/bin/wakeobj/Asserts.o ../wUnit/bin/wakeobj/TestResultReporter.o
@@ -18,7 +20,9 @@ TABLEFILES := $(subst $(SRCDIR),$(TABLEDIR),${SOURCEFILES:.wk=.table})
 TESTTABLEFILES := $(subst $(TESTDIR),$(TABLEDIR),${TESTFILES:.wk=.table})
 
 bin/$(PROGRAM): $(OBJECTFILES) $(TABLEFILES) $(LIBRARYFILES) tests
-	wake -l -d $(TABLEDIR) -o bin/$(PROGRAM) $(OBJECTFILES) $(LIBRARYFILES)
+ifeq($(EXECUTABLE), true)
+		wake -l -d $(TABLEDIR) -o bin/$(PROGRAM) $(OBJECTFILES) $(LIBRARYFILES)
+endif
 
 .PHONY:
 tests: bin/$(PROGRAM)-test
