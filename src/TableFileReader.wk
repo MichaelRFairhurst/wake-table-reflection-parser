@@ -29,14 +29,14 @@ every TableFileReader is:
 			var Text = File.read(tag); // get classname
 			var Num = File.readUnsignedChar();
 			if(Num != 0) WakeClass.parentclass = Text;
-			else WakeClass.interfaces[WakeClass.interfaces.getSize()] = Text;
+			else WakeClass.interfaces.push(Text);
 		}
 
 		return WakeClass;
 
 		// For this we need file.eof()
 		while((tag := File.readUnsignedChar()) != 0) {
-			WakeClass.parameters[WakeClass.parameters.getSize()] = readType(File);
+			WakeClass.parameters.push(readType(File));
 		}
 
 	}
@@ -53,12 +53,12 @@ every TableFileReader is:
 				WakeType.returntype = readType(File);
 			}
 			while((tag := File.readUnsignedChar()) != 0) {
-				WakeType.arguments[WakeType.arguments.getSize()] = readTypeByTag(tag, File);
+				WakeType.arguments.push(readTypeByTag(tag, File));
 			}
 		} else if(tag == 2) {
 			WakeType.classname = readTextWithLengthTag(File);
 			while((tag := File.readUnsignedChar()) != 0) {
-				WakeType.parameters[WakeType.parameters.getSize()] = readTypeByTag(tag, File);
+				WakeType.parameters.push(readTypeByTag(tag, File));
 			}
 			File.readUnsignedChar(); // shadow
 		} else if(tag == 3) {
