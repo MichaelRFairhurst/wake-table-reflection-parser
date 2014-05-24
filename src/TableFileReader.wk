@@ -27,7 +27,7 @@ every TableFileReader is:
 			WakeProperty.WakeType = WakeType;
 			WakeProperty.name = Text;
 			WakeProperty.flags = flags;
-			WakeProperty.casing = casing;
+			WakeProperty.casing = casing.split('#');
 			WakeClass.properties.put(Text, WakeProperty);
 		}
 
