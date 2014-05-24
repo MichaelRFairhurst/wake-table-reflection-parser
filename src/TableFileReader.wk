@@ -24,7 +24,7 @@ every TableFileReader is:
 			var WakeType = readType(File);
 			var WakeProperty <- this;
 
-			WakeProperty.type = WakeType;
+			WakeProperty.WakeType = WakeType;
 			WakeProperty.name = Text;
 			WakeProperty.flags = flags;
 			WakeProperty.casing = casing;
