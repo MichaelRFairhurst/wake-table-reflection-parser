@@ -1,0 +1,8 @@
+import WakeType;
+
+every WakeProperty is:
+
+	needs public WakeType type;
+	with public Text casing = "";
+	with public Text name = "";
+	with public Num flags = 0;

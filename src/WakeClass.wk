@@ -1,11 +1,10 @@
 import WakeType;
+import WakeProperty;
 import Map;
 
 every WakeClass is:
 
-	needs public Map{Text, WakeType} properties,
-		public Map{Text, Num} propertyFlags,
-		public Map{Text, Text} propertyCasings;
+	needs public Map{Text, WakeProperty} properties;
 
 	with public Bool isAbstract = false;
 	with public Text classname = "";

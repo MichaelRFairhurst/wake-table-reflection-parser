@@ -2,10 +2,13 @@ import File;
 import WakeType;
 import WakeClass;
 import Map;
+import WakeProperty;
 
 every TableFileReader is:
 
-	provides WakeType, WakeClass, Map{Text, WakeType}, Map{Text, Num}, Map{Text, Text};
+	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty;
+
+	with public WakeClass[] addingClass = [];
 
 	WakeClass -- readFrom(File) {
 		var WakeClass <- this;
@@ -19,10 +22,13 @@ every TableFileReader is:
 			var Text casing = readTextWithLengthTag(File); // get Casing
 			var flags Num = File.readUnsignedChar();
 			var WakeType = readType(File);
+			var WakeProperty <- this;
 
-			WakeClass.properties.put(Text, WakeType);
-			WakeClass.propertyFlags.put(Text, flags);
-			WakeClass.propertyCasings.put(Text, casing);
+			WakeProperty.type = WakeType;
+			WakeProperty.name = Text;
+			WakeProperty.flags = flags;
+			WakeProperty.casing = casing;
+			WakeClass.properties.put(Text, WakeProperty);
 		}
 
 		while((tag := File.readUnsignedChar()) != 0) {
