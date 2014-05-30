@@ -47,3 +47,46 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(1);
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
 	}
+
+	~[ test .getPureName on array ]~(Asserts) {
+		var WakeType <- this;
+		WakeType.classname = "Test";
+		WakeType.arrayed = 1;
+		Asserts.that(WakeType.getPureName())Equals("Test[]");
+		WakeType.arrayed = 2;
+		Asserts.that(WakeType.getPureName())Equals("Test[][]");
+	}
+
+	~[ test .getPureName on generic ]~(Asserts) {
+		var WakeType <- this;
+		var $WakeType <- this;
+		var $$WakeType <- this;
+		WakeType.classname = "Bears";
+		$WakeType.classname = "Beets";
+		$$WakeType.classname = "BattlestarGalactica";
+
+		WakeType.parameters.push($WakeType);
+		Asserts.that(WakeType.getPureName())Equals("Bears{Beets}");
+		WakeType.parameters.push($$WakeType);
+		Asserts.that(WakeType.getPureName())Equals("Bears{Beets,BattlestarGalactica}");
+	}
+
+	~[ test .getPureName on arrayed generic ]~(Asserts) {
+		var WakeType <- this;
+		var $WakeType <- this;
+		WakeType.classname = "Bears";
+		WakeType.arrayed = 1;
+		$WakeType.classname = "Beets";
+
+		WakeType.parameters.push($WakeType);
+		Asserts.that(WakeType.getPureName())Equals("Bears{Beets}[]");
+	}
+
+	~[ test .getPureName on optional ]~(Asserts) {
+		var WakeType <- this;
+		var $WakeType <- this;
+		WakeType.classname = "Bears";
+		WakeType.optional = 1;
+
+		Asserts.that(WakeType.getPureName())Equals("Bears?");
+	}

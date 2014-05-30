@@ -23,12 +23,20 @@ every WakeType is:
 			Text += '{';
 			var WakeType[] = parameters;
 			foreach(WakeType[]) { // @TODO foreach on alias
-				if(first) Text += ',';
+				if(!first) Text += ',';
 				first = false;
 				Text += WakeType.getPureName();
 			}
 			Text += '}';
 		}
+
+		var Num = arrayed;
+		while(Num > 0) {
+			Text += "[]";
+			Num -= 1;
+		}
+
+		if(optional != 0) Text += "?";
 
 		return Text;
 	}
