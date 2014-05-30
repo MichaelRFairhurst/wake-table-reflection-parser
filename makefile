@@ -1,19 +1,23 @@
 PROGRAM := table-file-parser
+#
+# set to false or it will be linked with a main()
 EXECUTABLE := false
 
 LIBRARYFILES := ../compiler/bin/wakeobj/std.o ../std/bin/wakeobj/Map.o
 LIBRARYTABLES := $(filter-out $(wildcard ../compiler/bin/waketable/*Test.table), $(wildcard ../compiler/bin/waketable/*.table) ) ../std/bin/waketable/Map.table
 TESTLIBRARYFILES := ../wUnit/bin/wakeobj/Asserts.o ../wUnit/bin/wakeobj/TestResultReporter.o
 
-TABLEDIR := bin/waketable
-OBJECTDIR := bin/wakeobj
 SRCDIR := src
 TESTDIR := test
+TABLEDIR := bin/waketable
+OBJECTDIR := bin/wakeobj
+SRCDEPDIR := bin/srcdep
+TESTDEPDIR := bin/testdep
 
 SOURCEFILES := $(wildcard $(SRCDIR)/*.wk)
 TESTFILES := $(wildcard $(TESTDIR)/*.wk)
 
-DEPFILES := ${SOURCEFILES:.wk=.d} ${TESTFILES:.wk=.d}
+DEPFILES := $(subst $(SRCDIR),$(SRCDEPDIR),${SOURCEFILES:.wk=.d}) $(subst $(TESTDIR),$(TESTDEPDIR),${TESTFILES:.wk=.d})
 OBJECTFILES := $(subst $(SRCDIR),$(OBJECTDIR),${SOURCEFILES:.wk=.o})
 TESTOBJECTFILES := $(subst $(TESTDIR),$(OBJECTDIR),${TESTFILES:.wk=.o})
 TABLEFILES := $(subst $(SRCDIR),$(TABLEDIR),${SOURCEFILES:.wk=.table})
@@ -43,10 +47,10 @@ FORCE:
 $(addprefix $(TABLEDIR)/,$(notdir $(LIBRARYTABLES))): $(LIBRARYTABLES)
 	cp $(LIBRARYTABLES) $(TABLEDIR)
 
-$(SRCDIR)/%.d: $(SRCDIR)/%.wk
+$(SRCDEPDIR)/%.d: $(SRCDIR)/%.wk
 	@./generate-makefile.sh $< $(TABLEDIR) > $@
 
-$(TESTDIR)/%.d: $(TESTDIR)/%.wk
+$(TESTDEPDIR)/%.d: $(TESTDIR)/%.wk
 	@./generate-makefile.sh $< $(TABLEDIR) > $@
 
 $(TABLEDIR)/%.table: $(SRCDIR)/%.wk
@@ -62,8 +66,7 @@ $(OBJECTDIR)/%Test.o: $(TESTDIR)/%Test.wk
 	wake $< -d $(TABLEDIR) -o $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
--include ${SOURCEFILES:.wk=.d}
--include ${TESTFILES:.wk=.d}
+-include $(DEPFILES)
 endif
 
 clean:
