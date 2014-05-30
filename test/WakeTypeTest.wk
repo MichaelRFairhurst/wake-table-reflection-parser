@@ -1,0 +1,49 @@
+import Asserts;
+import WakeType;
+
+every WakeTypeTest is:
+
+	provides WakeType;
+
+	~[ test .getNeeededImports() uses classname ]~(Asserts) {
+		var WakeType <- this;
+		WakeType.classname = "Test";
+
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(1);
+		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
+	}
+
+	~[ test .getNeededImports() skips primitives ]~(Asserts) {
+		var WakeType <- this;
+		WakeType.classname = "Num";
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
+		WakeType.classname = "Text";
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
+		WakeType.classname = "List";
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
+		WakeType.classname = "Bool";
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
+	}
+
+	~[ test .getNeeededImports() recurses to parameters ]~(Asserts) {
+		var WakeType <- this;
+		var $WakeType <- this;
+		WakeType.classname = "Test";
+		$WakeType.classname = "Hey";
+		WakeType.parameters.push($WakeType);
+
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(2);
+		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
+		Asserts.that(WakeType.getNeededImports()[1])Equals("Hey");
+	}
+
+	~[ test .getNeeededImports() skips duplicates from parameters ]~(Asserts) {
+		var WakeType <- this;
+		var $WakeType <- this;
+		WakeType.classname = "Test";
+		$WakeType.classname = "Test";
+		WakeType.parameters.push($WakeType);
+
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(1);
+		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
+	}

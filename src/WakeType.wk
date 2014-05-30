@@ -15,9 +15,43 @@ every WakeType is:
 	}
 
 	Text -- getPureName() {
-		return "Blah";
+		var Text = classname;
+
+		if(parameters.getSize() > 0) {
+			var Bool first = true;
+
+			Text += '{';
+			var WakeType[] = parameters;
+			foreach(WakeType[]) { // @TODO foreach on alias
+				if(first) Text += ',';
+				first = false;
+				Text += WakeType.getPureName();
+			}
+			Text += '}';
+		}
+
+		return Text;
 	}
 
-	Text -- getImportName() {
-		return "blah";
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+		if(classname != "Num" && classname != "Bool" && classname != "List" && classname != "Text")
+			Text[].push(classname);
+
+		if(parameters.getSize() != 0) {
+			var WakeType[] = parameters;
+			foreach(WakeType[]) { // @TODO foreach on alias
+				var $Text[] = WakeType.getNeededImports();
+				foreach($Text[]) {
+					if($Text == "Num" || $Text == "Bool" || $Text == "List" || $Text == "Text")
+						continue;
+					if(Text[].contains($Text))
+						continue;
+
+					Text[].push($Text);
+				}
+			}
+		}
+
+		return Text[];
 	}
