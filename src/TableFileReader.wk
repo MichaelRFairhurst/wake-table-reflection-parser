@@ -79,7 +79,7 @@ every TableFileReader is:
 		}
 		WakeType.arrayed = File.readUnsignedChar();
 		readTextWithLengthTag(File); // read alias
-		readTextWithLengthTag(File); // read specialty
+		WakeType.specialty = readTextWithLengthTag(File);
 		WakeType.optional = File.readUnsignedChar();
 
 		return WakeType;

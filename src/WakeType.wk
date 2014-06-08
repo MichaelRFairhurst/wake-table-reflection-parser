@@ -4,6 +4,7 @@ every WakeType is:
 	with public Num arrayed = 0;
 	with public Num optional = 0;
 	with public Text classname = "";
+	with public Text specialty = "";
 	with public WakeType[] parameters = [];
 	with public WakeType? returntype = nothing;
 	with public WakeType[] arguments = [];
