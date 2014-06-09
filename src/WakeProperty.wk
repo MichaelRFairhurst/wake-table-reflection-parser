@@ -6,3 +6,7 @@ every WakeProperty is:
 	with public Text[] casing = [];
 	with public Text name = "";
 	with public Num flags = 0;
+
+	Text[] -- getNeededImports() {
+		return WakeType.getNeededImports();
+	}

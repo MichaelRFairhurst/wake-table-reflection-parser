@@ -1,3 +1,5 @@
+import ImportFilterer;
+
 every WakeType is:
 
 	with public Num type = 0;
@@ -10,6 +12,8 @@ every WakeType is:
 	with public WakeType[] arguments = [];
 	with public WakeType? upperbound = nothing;
 	with public WakeType? lowerbound = nothing;
+
+	needs ImportFilterer;
 
 	Text -- getDeclarableName() {
 		return "Blah";
@@ -44,7 +48,7 @@ every WakeType is:
 
 	Text[] -- getNeededImports() {
 		var Text[] = [];
-		if(classname != "Num" && classname != "Bool" && classname != "List" && classname != "Text")
+		if(!ImportFilterer.check(classname)IsAPrimitive())
 			Text[].push(classname);
 
 		if(parameters.getSize() != 0) {
@@ -52,13 +56,33 @@ every WakeType is:
 			foreach(WakeType[]) { // @TODO foreach on alias
 				var $Text[] = WakeType.getNeededImports();
 				foreach($Text[]) {
-					if($Text == "Num" || $Text == "Bool" || $Text == "List" || $Text == "Text")
-						continue;
-					if(Text[].contains($Text))
-						continue;
+					if(ImportFilterer.check($Text)IsAPrimitive()) continue;
+					if(Text[].contains($Text)) continue;
 
 					Text[].push($Text);
 				}
+			}
+		}
+
+		var WakeType[] = arguments;
+		foreach(WakeType[]) {
+			var $Text[] = WakeType.getNeededImports();
+			foreach($Text[]) {
+				if(ImportFilterer.check($Text)IsAPrimitive()) continue;
+				if(Text[].contains($Text)) continue;
+
+				Text[].push($Text);
+			}
+		}
+
+		var WakeType? = returntype;
+		if WakeType exists {
+			var $Text[] = WakeType.getNeededImports();
+			foreach($Text[]) {
+				if(ImportFilterer.check($Text)IsAPrimitive()) continue;
+				if(Text[].contains($Text)) continue;
+
+				Text[].push($Text);
 			}
 		}
 

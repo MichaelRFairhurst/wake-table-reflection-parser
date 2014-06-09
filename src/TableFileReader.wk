@@ -3,10 +3,11 @@ import WakeType;
 import WakeClass;
 import Map;
 import WakeProperty;
+import ImportFilterer;
 
 every TableFileReader is:
 
-	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty;
+	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty, ImportFilterer;
 
 	with public WakeClass[] addingClass = [];
 

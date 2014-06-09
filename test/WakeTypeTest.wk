@@ -1,9 +1,10 @@
 import Asserts;
 import WakeType;
+import ImportFilterer;
 
 every WakeTypeTest is:
 
-	provides WakeType;
+	provides WakeType, ImportFilterer;
 
 	~[ test .getNeeededImports() uses classname ]~(Asserts) {
 		var WakeType <- this;
@@ -59,8 +60,8 @@ every WakeTypeTest is:
 		WakeType.arguments.push($$WakeType);
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(3);
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
-		Asserts.that(WakeType.getNeededImports()[1])Equals("MeTest");
-		Asserts.that(WakeType.getNeededImports()[2])Equals("MeTestMe");
+		Asserts.that(WakeType.getNeededImports()[1])Equals("MeTestMe");
+		Asserts.that(WakeType.getNeededImports()[2])Equals("MeTest");
 	}
 
 	~[ test .getPureName on array ]~(Asserts) {

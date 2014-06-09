@@ -14,3 +14,19 @@ every WakeClass is:
 
 	with public Text? parentclass = nothing;
 	with public Text[] interfaces = [];
+
+	Text[] -- getApiImports() {
+		var Text[] = [];
+		foreach(properties.getKeys()) { // @Todo foreach as
+			var WakeProperty? = properties.get(Text);
+
+			if WakeProperty exists {
+				var $Text[] = WakeProperty.getNeededImports();
+				foreach($Text[]) {
+					if(!Text[].contains($Text)) Text[].push($Text);
+				}
+			}
+		}
+
+		return Text[];
+	}
