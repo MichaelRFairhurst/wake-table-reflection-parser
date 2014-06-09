@@ -48,6 +48,21 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
 	}
 
+	~[ test .getNeededImports() uses return types and arguments ]~(Asserts) {
+		var WakeType <- this;
+		var $WakeType <- this;
+		var $$WakeType <- this;
+		WakeType.classname = "Test";
+		$WakeType.classname = "MeTest";
+		$$WakeType.classname = "MeTestMe";
+		WakeType.returntype = $WakeType;
+		WakeType.arguments.push($$WakeType);
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(3);
+		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
+		Asserts.that(WakeType.getNeededImports()[1])Equals("MeTest");
+		Asserts.that(WakeType.getNeededImports()[2])Equals("MeTestMe");
+	}
+
 	~[ test .getPureName on array ]~(Asserts) {
 		var WakeType <- this;
 		WakeType.classname = "Test";
