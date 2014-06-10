@@ -3,16 +3,17 @@ import WakeType;
 import WakeClass;
 import Map;
 import WakeProperty;
+import ReflectionProvider;
 import ImportFilterer;
 
 every TableFileReader is:
 
-	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty, ImportFilterer;
+	needs ReflectionProvider;
 
 	with public WakeClass[] addingClass = [];
 
 	WakeClass -- readFrom(File) {
-		var WakeClass <- this;
+		var WakeClass <- ReflectionProvider;
 		WakeClass.classname = readTextWithLengthTag(File);
 
 		if(File.readUnsignedChar() != 0) WakeClass.isAbstract = true;
@@ -23,7 +24,7 @@ every TableFileReader is:
 			var Text casing = readTextWithLengthTag(File); // get Casing
 			var flags Num = File.readUnsignedChar();
 			var WakeType = readType(File);
-			var WakeProperty <- this;
+			var WakeProperty <- ReflectionProvider;
 
 			WakeProperty.WakeType = WakeType;
 			WakeProperty.name = Text;
@@ -53,7 +54,7 @@ every TableFileReader is:
 	}
 
 	WakeType -- readTypeByTag(Num tag, File) {
-		var WakeType <- this;
+		var WakeType <- ReflectionProvider;
 		WakeType.type = tag;
 		if(tag == 1) {
 			if((File.readUnsignedChar()) != 0) {

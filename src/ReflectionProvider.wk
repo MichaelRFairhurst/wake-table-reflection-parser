@@ -1,0 +1,9 @@
+import WakeType;
+import WakeProperty;
+import Map;
+import ImportFilterer;
+import WakeClass;
+
+every ReflectionProvider is:
+
+	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty, ImportFilterer;
