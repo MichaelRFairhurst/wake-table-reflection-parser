@@ -48,7 +48,7 @@ every WakeType is:
 
 	Text[] -- getNeededImports() {
 		var Text[] = [];
-		if(!ImportFilterer.check(classname)IsAPrimitive())
+		if(type == 2 && !ImportFilterer.check(classname)IsAPrimitive())
 			Text[].push(classname);
 
 		if(parameters.getSize() != 0) {
