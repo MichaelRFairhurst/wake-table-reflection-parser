@@ -4,8 +4,8 @@ PROGRAM := table-file-parser
 EXECUTABLE := false
 
 # Include all wake libraries by default since there aren't many just yet
-LIBRARYFILES := $(wildcard lib/obj/*.o)
-LIBRARYTABLES := $(wildcard lib/table/*.table)
+LIBRARYFILES := $(filter-out WakeType WakeClass WakeProperty TableFileReader TableDirectoryScanner ImportIterator ReflectionProvider,$(wildcard lib/obj/*.o))
+LIBRARYTABLES := $(filter-out WakeType WakeClass WakeProperty TableFileReader TableDirectoryScanner ImportIterator ReflectionProvider,$(wildcard lib/table/*.table))
 TESTLIBRARYFILES :=
 
 ##
