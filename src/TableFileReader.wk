@@ -13,7 +13,7 @@ every TableFileReader is:
 	with public WakeClass[] addingClass = [];
 
 	WakeClass -- readFrom(File) {
-		var WakeClass <- ReflectionProvider;
+		var WakeClass from ReflectionProvider;
 		WakeClass.classname = readTextWithLengthTag(File);
 
 		if(File.readUnsignedChar() != 0) WakeClass.isAbstract = true;
@@ -24,7 +24,7 @@ every TableFileReader is:
 			var Text casing = readTextWithLengthTag(File); // get Casing
 			var flags Num = File.readUnsignedChar();
 			var WakeType = readType(File);
-			var WakeProperty <- ReflectionProvider;
+			var WakeProperty from ReflectionProvider;
 
 			WakeProperty.WakeType = WakeType;
 			WakeProperty.name = Text;
@@ -54,7 +54,7 @@ every TableFileReader is:
 	}
 
 	WakeType -- readTypeByTag(Num tag, File) {
-		var WakeType <- ReflectionProvider;
+		var WakeType from ReflectionProvider;
 		WakeType.type = tag;
 		if(tag == 1) {
 			if((File.readUnsignedChar()) != 0) {

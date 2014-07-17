@@ -5,10 +5,10 @@ import ImportFilterer;
 every WakeTypeTest is:
 
 	provides WakeType, ImportFilterer,
-		WakeType:class <- { var WakeType <- this; WakeType.type = 2; return WakeType; };
+		WakeType:class <- { var WakeType from this; WakeType.type = 2; return WakeType; };
 
 	~[ test .getNeeededImports() uses classname ]~(Asserts) {
-		var WakeType:class <- this;
+		var WakeType:class from this;
 		WakeType.classname = "Test";
 
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(1);
@@ -16,7 +16,7 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getNeededImports() skips primitives ]~(Asserts) {
-		var WakeType:class <- this;
+		var WakeType:class from this;
 		WakeType.classname = "Num";
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 		WakeType.classname = "Text";
@@ -28,8 +28,8 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getNeeededImports() recurses to parameters ]~(Asserts) {
-		var WakeType:class <- this;
-		var $WakeType:class <- this;
+		var WakeType:class from this;
+		var $WakeType:class from this;
 		WakeType.classname = "Test";
 		$WakeType.classname = "Hey";
 		WakeType.parameters.push($WakeType);
@@ -40,8 +40,8 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getNeeededImports() skips duplicates from parameters ]~(Asserts) {
-		var WakeType:class <- this;
-		var $WakeType:class <- this;
+		var WakeType:class from this;
+		var $WakeType:class from this;
 		WakeType.classname = "Test";
 		$WakeType.classname = "Test";
 		WakeType.parameters.push($WakeType);
@@ -51,9 +51,9 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getNeededImports() uses return types and arguments ]~(Asserts) {
-		var WakeType:class <- this;
-		var $WakeType:class <- this;
-		var $$WakeType:class <- this;
+		var WakeType:class from this;
+		var $WakeType:class from this;
+		var $$WakeType:class from this;
 		WakeType.classname = "Test";
 		$WakeType.classname = "MeTest";
 		$$WakeType.classname = "MeTestMe";
@@ -66,7 +66,7 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getPureName on array ]~(Asserts) {
-		var WakeType:class <- this;
+		var WakeType:class from this;
 		WakeType.classname = "Test";
 		WakeType.arrayed = 1;
 		Asserts.that(WakeType.getPureName())Equals("Test[]");
@@ -75,9 +75,9 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getPureName on generic ]~(Asserts) {
-		var WakeType:class <- this;
-		var $WakeType:class <- this;
-		var $$WakeType:class <- this;
+		var WakeType:class from this;
+		var $WakeType:class from this;
+		var $$WakeType:class from this;
 		WakeType.classname = "Bears";
 		$WakeType.classname = "Beets";
 		$$WakeType.classname = "BattlestarGalactica";
@@ -89,8 +89,8 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getPureName on arrayed generic ]~(Asserts) {
-		var WakeType:class <- this;
-		var $WakeType:class <- this;
+		var WakeType:class from this;
+		var $WakeType:class from this;
 		WakeType.classname = "Bears";
 		WakeType.arrayed = 1;
 		$WakeType.classname = "Beets";
@@ -100,8 +100,8 @@ every WakeTypeTest is:
 	}
 
 	~[ test .getPureName on optional ]~(Asserts) {
-		var WakeType:class <- this;
-		var $WakeType:class <- this;
+		var WakeType:class from this;
+		var $WakeType:class from this;
 		WakeType.classname = "Bears";
 		WakeType.optional = 1;
 
@@ -109,7 +109,7 @@ every WakeTypeTest is:
 	}
 
 	~[ test methods don't import a classname ]~(Asserts) {
-		var WakeType <- this;
+		var WakeType from this;
 		WakeType.type = 1;
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 	}
