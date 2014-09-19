@@ -5,6 +5,11 @@ import Map;
 import WakeProperty;
 import ReflectionProvider;
 import ImportFilterer;
+import WakeClassType;
+import WakeListType;
+import WakeLambdaType;
+import WakeParameterizedType;
+import WakeOptionalType;
 
 every TableFileReader is:
 
@@ -57,32 +62,48 @@ every TableFileReader is:
 		var WakeType from ReflectionProvider;
 		WakeType.type = tag;
 		if(tag == 1) {
+			var WakeLambdaType from ReflectionProvider;
 			if((File.readUnsignedChar()) != 0) {
-				WakeType.returntype = readType(File);
+				WakeLambdaType.returntype = readType(File);
 			}
 			while((tag := File.readUnsignedChar()) != 0) {
-				WakeType.arguments.push(readTypeByTag(tag, File));
+				WakeLambdaType.arguments.push(readTypeByTag(tag, File));
 			}
+			WakeType.WakeLambdaType = WakeLambdaType;
 		} else if(tag == 2) {
-			WakeType.classname = readTextWithLengthTag(File);
+			var WakeClassType from ReflectionProvider;
+			WakeClassType.classname = readTextWithLengthTag(File);
 			while((tag := File.readUnsignedChar()) != 0) {
-				WakeType.parameters.push(readTypeByTag(tag, File));
+				WakeClassType.parameters.push(readTypeByTag(tag, File));
 			}
 			File.readUnsignedChar(); // shadow
+			WakeType.WakeClassType = WakeClassType;
 		} else if(tag == 3) {
-			WakeType.classname = readTextWithLengthTag(File); // label
+			var WakeParameterizedType from ReflectionProvider;
+			WakeParameterizedType.label = readTextWithLengthTag(File); // label
 			if((tag := File.readUnsignedChar()) != 0) {
-				WakeType.upperbound = readType(File);
+				WakeParameterizedType.upperbound = readType(File);
 			}
 			if((tag := File.readUnsignedChar()) != 0) {
-				WakeType.lowerbound = readType(File);
+				WakeParameterizedType.lowerbound = readType(File);
 			}
 			File.readUnsignedChar(); // shadow
+			WakeType.WakeParameterizedType = WakeParameterizedType;
+		} else if(tag == 7) {
+			var Num levels = File.readUnsignedChar();
+			ReflectionProvider.contained = readType(File);
+			var WakeListType from ReflectionProvider; // @Todo ctor args
+			WakeListType.levels = levels;
+			WakeType.WakeListType = WakeListType;
+		} else if(tag == 8) {
+			var Num levels = File.readUnsignedChar();
+			ReflectionProvider.contained = readType(File);
+			var WakeOptionalType from ReflectionProvider; // @Todo ctor args
+			WakeOptionalType.levels = levels;
+			WakeType.WakeOptionalType = WakeOptionalType;
 		}
-		WakeType.arrayed = File.readUnsignedChar();
 		readTextWithLengthTag(File); // read alias
 		WakeType.specialty = readTextWithLengthTag(File);
-		WakeType.optional = File.readUnsignedChar();
 
 		return WakeType;
 	}

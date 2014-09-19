@@ -1,15 +1,78 @@
 import Asserts;
 import WakeType;
+import WakeListType;
+import WakeClassType;
+import WakeOptionalType;
+import WakeLambdaType;
+import WakeParameterizedType;
 import ImportFilterer;
 
 every WakeTypeTest is:
 
-	provides WakeType, ImportFilterer,
-		WakeType:class <- { var WakeType from this; WakeType.type = 2; return WakeType; };
+	provides
+		WakeType,
+		ImportFilterer,
+		WakeType:class <- {
+			var WakeType from this;
+			WakeType.type = 2;
+			WakeType.WakeClassType = WakeClassType from this;
+			return WakeType;
+		},
+		WakeType:lambda <- {
+			var WakeType from this;
+			WakeType.type = 1;
+			WakeType.WakeLambdaType = WakeLambdaType from this;
+			return WakeType;
+		},
+		WakeType:classlist <- {
+			var WakeType from this;
+			WakeType.type = 7;
+			WakeType.WakeListType = WakeListType:classlist from this;
+			return WakeType;
+		},
+		WakeType:optionalclass <- {
+			var WakeType from this;
+			WakeType.type = 8;
+			WakeType.WakeOptionalType = WakeOptionalType:optionalclass from this;
+			return WakeType;
+		},
+		WakeClassType, WakeLambdaType,
+		WakeListType:classlist <- WakeListType(WakeType:class),
+		WakeOptionalType:optionalclass <- WakeOptionalType(WakeType:class),
+		Exception;
+
+	setClassname(WakeType, Text) {
+		var WakeClassType? = WakeType.WakeClassType;
+		if WakeClassType exists WakeClassType.classname = Text;
+	}
+
+	WakeClassType -- getClass(WakeType) {
+		var WakeClassType? = WakeType.WakeClassType;
+		if WakeClassType exists return WakeClassType;
+		throw Exception from this;
+	}
+
+	WakeLambdaType -- getLambda(WakeType) {
+		var WakeLambdaType? = WakeType.WakeLambdaType;
+		if WakeLambdaType exists return WakeLambdaType;
+		throw Exception from this;
+	}
+
+	WakeListType -- getList(WakeType) {
+		var WakeListType? = WakeType.WakeListType;
+		if WakeListType exists return WakeListType;
+		throw Exception from this;
+	}
+
+	WakeOptionalType -- getOptional(WakeType) {
+		var WakeOptionalType? = WakeType.WakeOptionalType;
+		if WakeOptionalType exists return WakeOptionalType;
+		throw Exception from this;
+	}
 
 	~[ test .getNeeededImports() uses classname ]~(Asserts) {
 		var WakeType:class from this;
-		WakeType.classname = "Test";
+		setClassname(WakeType, "Test");
 
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(1);
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
@@ -17,22 +80,24 @@ every WakeTypeTest is:
 
 	~[ test .getNeededImports() skips primitives ]~(Asserts) {
 		var WakeType:class from this;
-		WakeType.classname = "Num";
+		setClassname(WakeType, "Num");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		WakeType.classname = "Text";
+		setClassname(WakeType, "Text");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		WakeType.classname = "List";
+		setClassname(WakeType, "List");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		WakeType.classname = "Bool";
+		setClassname(WakeType, "Bool");
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
+		setClassname(WakeType, "Exception");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 	}
 
 	~[ test .getNeeededImports() recurses to parameters ]~(Asserts) {
 		var WakeType:class from this;
 		var $WakeType:class from this;
-		WakeType.classname = "Test";
-		$WakeType.classname = "Hey";
-		WakeType.parameters.push($WakeType);
+		setClassname(WakeType, "Test");
+		setClassname($WakeType, "Hey");
+		getClass(WakeType).parameters.push($WakeType);
 
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(2);
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
@@ -42,35 +107,33 @@ every WakeTypeTest is:
 	~[ test .getNeeededImports() skips duplicates from parameters ]~(Asserts) {
 		var WakeType:class from this;
 		var $WakeType:class from this;
-		WakeType.classname = "Test";
-		$WakeType.classname = "Test";
-		WakeType.parameters.push($WakeType);
+		setClassname(WakeType, "Test");
+		setClassname($WakeType, "Test");
+		getClass(WakeType).parameters.push($WakeType);
 
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(1);
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
 	}
 
 	~[ test .getNeededImports() uses return types and arguments ]~(Asserts) {
-		var WakeType:class from this;
+		var WakeType:lambda from this;
 		var $WakeType:class from this;
 		var $$WakeType:class from this;
-		WakeType.classname = "Test";
-		$WakeType.classname = "MeTest";
-		$$WakeType.classname = "MeTestMe";
-		WakeType.returntype = $WakeType;
-		WakeType.arguments.push($$WakeType);
-		Asserts.that(WakeType.getNeededImports().getSize())Equals(3);
-		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
-		Asserts.that(WakeType.getNeededImports()[1])Equals("MeTestMe");
-		Asserts.that(WakeType.getNeededImports()[2])Equals("MeTest");
+		setClassname($WakeType, "MeTest");
+		setClassname($$WakeType, "MeTestMe");
+		getLambda(WakeType).returntype = $WakeType;
+		getLambda(WakeType).arguments.push($$WakeType);
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(2);
+		Asserts.that(WakeType.getNeededImports()[0])Equals("MeTestMe");
+		Asserts.that(WakeType.getNeededImports()[1])Equals("MeTest");
 	}
 
 	~[ test .getPureName on array ]~(Asserts) {
-		var WakeType:class from this;
-		WakeType.classname = "Test";
-		WakeType.arrayed = 1;
+		var WakeType:classlist from this;
+		setClassname(getList(WakeType).contained, "Test");
+		getList(WakeType).levels = 1;
 		Asserts.that(WakeType.getPureName())Equals("Test[]");
-		WakeType.arrayed = 2;
+		getList(WakeType).levels = 2;
 		Asserts.that(WakeType.getPureName())Equals("Test[][]");
 	}
 
@@ -78,32 +141,31 @@ every WakeTypeTest is:
 		var WakeType:class from this;
 		var $WakeType:class from this;
 		var $$WakeType:class from this;
-		WakeType.classname = "Bears";
-		$WakeType.classname = "Beets";
-		$$WakeType.classname = "BattlestarGalactica";
+		setClassname(WakeType, "Bears");
+		setClassname($WakeType, "Beets");
+		setClassname($$WakeType, "BattlestarGalactica");
 
-		WakeType.parameters.push($WakeType);
+		getClass(WakeType).parameters.push($WakeType);
 		Asserts.that(WakeType.getPureName())Equals("Bears{Beets}");
-		WakeType.parameters.push($$WakeType);
+		getClass(WakeType).parameters.push($$WakeType);
 		Asserts.that(WakeType.getPureName())Equals("Bears{Beets,BattlestarGalactica}");
 	}
 
 	~[ test .getPureName on arrayed generic ]~(Asserts) {
-		var WakeType:class from this;
+		var WakeType:classlist from this;
 		var $WakeType:class from this;
-		WakeType.classname = "Bears";
-		WakeType.arrayed = 1;
-		$WakeType.classname = "Beets";
+		setClassname(getList(WakeType).contained, "Bears");
+		getList(WakeType).levels = 1;
+		setClassname($WakeType, "Beets");
 
-		WakeType.parameters.push($WakeType);
+		getClass(getList(WakeType).contained).parameters.push($WakeType);
 		Asserts.that(WakeType.getPureName())Equals("Bears{Beets}[]");
 	}
 
 	~[ test .getPureName on optional ]~(Asserts) {
-		var WakeType:class from this;
-		var $WakeType:class from this;
-		WakeType.classname = "Bears";
-		WakeType.optional = 1;
+		var WakeType:optionalclass from this;
+		setClassname(getOptional(WakeType).contained, "Bears");
+		getOptional(WakeType).levels = 1;
 
 		Asserts.that(WakeType.getPureName())Equals("Bears?");
 	}
