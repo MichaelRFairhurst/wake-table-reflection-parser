@@ -12,9 +12,9 @@ import WakeClassType;
 every ReflectionProvider is:
 
 	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty, ImportFilterer, Exception,
-		WakeListType,
-		WakeOptionalType <- WakeOptionalType(WakeType:contained),
-		WakeClassType <- WakeOptionalType(WakeType:contained),
+		WakeClassType,
+		WakeOptionalType,// <- WakeOptionalType(WakeType:contained),
+		WakeListType,// <- WakeListType(WakeType:contained),
 		WakeParameterizedType,
 		WakeLambdaType,
 		WakeType:contained <- {
