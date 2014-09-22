@@ -1,0 +1,4 @@
+every SpecificWakeType is:
+
+	Text -- getPureName();
+	Text[] -- getNeededImports();
