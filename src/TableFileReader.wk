@@ -90,14 +90,14 @@ every TableFileReader is:
 			File.readUnsignedChar(); // shadow
 			WakeType.WakeParameterizedType = WakeParameterizedType;
 		} else if(tag == 7) {
-			var Num levels = File.readUnsignedChar();
 			ReflectionProvider.contained = readType(File);
+			var Num levels = File.readUnsignedChar();
 			var WakeListType from ReflectionProvider; // @Todo ctor args
 			WakeListType.levels = levels;
 			WakeType.WakeListType = WakeListType;
 		} else if(tag == 8) {
-			var Num levels = File.readUnsignedChar();
 			ReflectionProvider.contained = readType(File);
+			var Num levels = File.readUnsignedChar();
 			var WakeOptionalType from ReflectionProvider; // @Todo ctor args
 			WakeOptionalType.levels = levels;
 			WakeType.WakeOptionalType = WakeOptionalType;
