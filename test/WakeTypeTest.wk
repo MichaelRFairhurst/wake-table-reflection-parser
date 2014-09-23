@@ -171,7 +171,7 @@ every WakeTypeTest is:
 	}
 
 	~[ test methods don't import a classname ]~(Asserts) {
-		var WakeType from this;
+		var WakeType:lambda from this;
 		WakeType.type = 1;
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 	}

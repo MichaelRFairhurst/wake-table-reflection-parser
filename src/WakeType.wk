@@ -77,7 +77,7 @@ every WakeListType (capable SpecificWakeType) is:
 	Text -- getPureName() {
 		var Text = contained.getPureName();
 
-		foreach(0.range(levels)) {
+		for(var Num = 0; Num < levels; Num += 1) { // todo foreach range
 			Text += "[]";
 		}
 

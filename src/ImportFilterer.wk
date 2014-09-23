@@ -1,5 +1,5 @@
 every ImportFilterer is:
 
 	Bool -- check(Text)IsAPrimitive() {
-		return Text == "Num" || Text == "Bool" || Text == "List" || Text == "Text";
+		return Text == "Num" || Text == "Bool" || Text == "List" || Text == "Text" || Text == "Exception";
 	}
