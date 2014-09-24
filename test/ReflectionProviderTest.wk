@@ -1,0 +1,20 @@
+import ReflectionProvider;
+import Asserts;
+import WakeType;
+import WakeClassType;
+import WakeOptionalType;
+import WakeListType;
+import ImportFilterer;
+
+every ReflectionProviderTest is:
+
+	provides ReflectionProvider;
+
+	~[ test get list type includes the contained type ]~(Asserts) {
+		var ReflectionProvider from this;
+		var WakeType from ReflectionProvider;
+		ReflectionProvider.contained = WakeType;
+
+		var WakeListType from ReflectionProvider;
+		Asserts.that(WakeListType.contained == WakeType);
+	}

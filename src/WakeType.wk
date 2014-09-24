@@ -55,7 +55,7 @@ every WakeType is:
 every WakeOptionalType (capable SpecificWakeType) is:
 
 	with public Num levels = 0; // optionals & lists
-	needs public WakeType contained; // optionals & lists
+	needs public WakeType:contained contained; // optionals & lists
 
 	Text -- getPureName() {
 		var Text = contained.getPureName();
@@ -72,7 +72,7 @@ every WakeOptionalType (capable SpecificWakeType) is:
 every WakeListType (capable SpecificWakeType) is:
 
 	with public Num levels = 0; // optionals & lists
-	needs public WakeType contained; // optionals & lists
+	needs public WakeType:contained contained; // optionals & lists
 
 	Text -- getPureName() {
 		var Text = contained.getPureName();

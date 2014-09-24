@@ -39,6 +39,7 @@ every WakeTypeTest is:
 		WakeClassType, WakeLambdaType,
 		WakeListType:classlist <- WakeListType(WakeType:class),
 		WakeOptionalType:optionalclass <- WakeOptionalType(WakeType:class),
+		WakeType:contained, //Bug!! Need to declare this
 		Exception;
 
 	setClassname(WakeType, Text) {
