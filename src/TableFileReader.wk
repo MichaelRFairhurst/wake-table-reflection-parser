@@ -12,6 +12,7 @@ import WakeParameterizedType;
 import WakeOptionalType;
 import Annotation;
 import AnnotationVal;
+import UnusableTableFileVersionException;
 
 every TableFileReader is:
 
@@ -19,7 +20,15 @@ every TableFileReader is:
 
 	with public WakeClass[] addingClass = [];
 
+	with Num expectedVersion = 3;
+
 	WakeClass -- readFrom(File) {
+		var Num version = File.readUnsignedChar();
+
+		if(version != expectedVersion) {
+			throw UnusableTableFileVersionException(version, 3) from ReflectionProvider;
+		}
+
 		var WakeClass from ReflectionProvider;
 		WakeClass.classname = readTextWithLengthTag(File);
 

@@ -10,6 +10,7 @@ import WakeLambdaType;
 import WakeClassType;
 import Annotation;
 import AnnotationVal;
+import UnusableTableFileVersionException;
 
 every ReflectionProvider is:
 
@@ -28,6 +29,7 @@ every ReflectionProvider is:
 			} else {
 				throw Exception from this;
 			}
-		};
+		},
+		UnusableTableFileVersionException <- UnusableTableFileVersionException(?Num, ?Num);
 
 	with public WakeType? contained = nothing;
