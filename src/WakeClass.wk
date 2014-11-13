@@ -1,6 +1,7 @@
 import WakeType;
 import WakeProperty;
 import Map;
+import Annotation;
 
 every WakeClass is:
 
@@ -11,6 +12,7 @@ every WakeClass is:
 	with public WakeType[] needTypes = [];
 	with public WakeType[] parameters = [];
 	with public WakeType[] appliedParameters = [];
+	with public Annotation[] = [];
 
 	with public Text? parentclass = nothing;
 	with public Text[] interfaces = [];

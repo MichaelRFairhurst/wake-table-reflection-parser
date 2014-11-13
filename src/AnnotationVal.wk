@@ -1,0 +1,5 @@
+every AnnotationVal is:
+
+	with Text? = nothing;
+	with Num? = nothing;
+	with Bool? = nothing;

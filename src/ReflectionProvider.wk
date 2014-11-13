@@ -8,6 +8,8 @@ import WakeOptionalType;
 import WakeParameterizedType;
 import WakeLambdaType;
 import WakeClassType;
+import Annotation;
+import AnnotationVal;
 
 every ReflectionProvider is:
 
@@ -17,6 +19,8 @@ every ReflectionProvider is:
 		WakeListType,// <- WakeListType(WakeType:contained),
 		WakeParameterizedType,
 		WakeLambdaType,
+		Annotation <- Annotation(?Text),
+		AnnotationVal,
 		WakeType:contained <- {
 			var WakeType? = contained;
 			if WakeType exists {

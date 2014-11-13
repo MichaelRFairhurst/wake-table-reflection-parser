@@ -1,0 +1,7 @@
+import AnnotationVal;
+
+every Annotation is:
+
+	needs public Text name;
+
+	with public AnnotationVal[] = [];

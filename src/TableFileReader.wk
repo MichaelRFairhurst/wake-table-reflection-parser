@@ -10,6 +10,8 @@ import WakeListType;
 import WakeLambdaType;
 import WakeParameterizedType;
 import WakeOptionalType;
+import Annotation;
+import AnnotationVal;
 
 every TableFileReader is:
 
@@ -35,6 +37,7 @@ every TableFileReader is:
 			WakeProperty.name = Text;
 			WakeProperty.flags = flags;
 			WakeProperty.casing = casing.split('#');
+			WakeProperty.Annotation[] = getAnnotations(File);
 			WakeClass.properties.put(Text, WakeProperty);
 		}
 
@@ -45,12 +48,14 @@ every TableFileReader is:
 			else WakeClass.interfaces.push(Text);
 		}
 
-		return WakeClass;
-
 		// For this we need file.eof()
 		while((tag := File.readUnsignedChar()) != 0) {
 			WakeClass.parameters.push(readType(File));
 		}
+
+		WakeClass.Annotation[] = getAnnotations(File);
+
+		return WakeClass;
 
 	}
 
@@ -112,4 +117,34 @@ every TableFileReader is:
 		var Num = File.readUnsignedChar();
 		if(Num == 0) return "";
 		return File.read(Num);
+	}
+
+	Annotation[] -- getAnnotations(File) {
+		var Annotation[] = [];
+
+		while(true) {
+			var Num = File.readUnsignedChar();
+			if(Num == 0) break;
+
+			var Text name = File.read(Num);
+			var Annotation(name) from ReflectionProvider;
+			Annotation[].push(Annotation);
+
+			while(true) {
+				Num = File.readUnsignedChar();
+				if(Num == 0) break;
+
+				var AnnotationVal from ReflectionProvider;
+				Annotation.AnnotationVal[].push(AnnotationVal);
+				if(Num == 1) {
+					AnnotationVal.Text = readTextWithLengthTag(File);
+				} else if(Num == 2) {
+					// aaaah!!
+				} else if(Num == 3) {
+					AnnotationVal.Bool = true if File.readUnsignedChar() else false;
+				}
+			}
+		}
+
+		return Annotation[];
 	}
