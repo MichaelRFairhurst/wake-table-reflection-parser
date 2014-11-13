@@ -7,6 +7,7 @@ import WakeLambdaType;
 import WakeParameterizedType;
 import ImportFilterer;
 
+@TestClass
 every WakeTypeTest is:
 
 	provides
@@ -71,6 +72,7 @@ every WakeTypeTest is:
 		throw Exception from this;
 	}
 
+	@Test
 	~[ test .getNeeededImports() uses classname ]~(Asserts) {
 		var WakeType:class from this;
 		setClassname(WakeType, "Test");
@@ -79,6 +81,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
 	}
 
+	@Test
 	~[ test .getNeededImports() skips primitives ]~(Asserts) {
 		var WakeType:class from this;
 		setClassname(WakeType, "Num");
@@ -93,6 +96,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 	}
 
+	@Test
 	~[ test .getNeeededImports() recurses to parameters ]~(Asserts) {
 		var WakeType:class from this;
 		var $WakeType:class from this;
@@ -105,6 +109,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports()[1])Equals("Hey");
 	}
 
+	@Test
 	~[ test .getNeeededImports() skips duplicates from parameters ]~(Asserts) {
 		var WakeType:class from this;
 		var $WakeType:class from this;
@@ -116,6 +121,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports()[0])Equals("Test");
 	}
 
+	@Test
 	~[ test .getNeededImports() uses return types and arguments ]~(Asserts) {
 		var WakeType:lambda from this;
 		var $WakeType:class from this;
@@ -129,6 +135,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports()[1])Equals("MeTest");
 	}
 
+	@Test
 	~[ test .getPureName on array ]~(Asserts) {
 		var WakeType:classlist from this;
 		setClassname(getList(WakeType).contained, "Test");
@@ -138,6 +145,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getPureName())Equals("Test[][]");
 	}
 
+	@Test
 	~[ test .getPureName on generic ]~(Asserts) {
 		var WakeType:class from this;
 		var $WakeType:class from this;
@@ -152,6 +160,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getPureName())Equals("Bears{Beets,BattlestarGalactica}");
 	}
 
+	@Test
 	~[ test .getPureName on arrayed generic ]~(Asserts) {
 		var WakeType:classlist from this;
 		var $WakeType:class from this;
@@ -163,6 +172,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getPureName())Equals("Bears{Beets}[]");
 	}
 
+	@Test
 	~[ test .getPureName on optional ]~(Asserts) {
 		var WakeType:optionalclass from this;
 		setClassname(getOptional(WakeType).contained, "Bears");
@@ -171,6 +181,7 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getPureName())Equals("Bears?");
 	}
 
+	@Test
 	~[ test methods don't import a classname ]~(Asserts) {
 		var WakeType:lambda from this;
 		WakeType.type = 1;

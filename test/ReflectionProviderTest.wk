@@ -6,10 +6,12 @@ import WakeOptionalType;
 import WakeListType;
 import ImportFilterer;
 
+@TestClass
 every ReflectionProviderTest is:
 
 	provides ReflectionProvider;
 
+	@Test
 	~[ test get list type includes the contained type ]~(Asserts) {
 		var ReflectionProvider from this;
 		var WakeType from ReflectionProvider;
