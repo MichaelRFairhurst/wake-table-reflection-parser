@@ -6,6 +6,7 @@ import WakeOptionalType;
 import WakeLambdaType;
 import WakeParameterizedType;
 import ImportFilterer;
+import SpecificWakeType;
 
 @TestClass
 every WakeTypeTest is:
@@ -70,6 +71,27 @@ every WakeTypeTest is:
 		var WakeOptionalType? = WakeType.WakeOptionalType;
 		if WakeOptionalType exists return WakeOptionalType;
 		throw Exception from this;
+	}
+
+	@Test
+	~[ test .getAsVariableName() uses classname ]~(Asserts) {
+		var WakeType:class from this;
+		setClassname(WakeType, "Test");
+		Asserts.that(WakeType.getAsVariableName())Equals("Test");
+	}
+
+	@Test
+	~[ test .getAsVariableName() ignores optionals ]~(Asserts) {
+		var WakeType:optionalclass from this;
+		setClassname(getOptional(WakeType).contained, "Test");
+		Asserts.that(WakeType.getAsVariableName())Equals("Test");
+	}
+
+	@Test
+	~[ test .getAsVariableName() includes brackets ]~(Asserts) {
+		var WakeType:classlist from this;
+		setClassname(getList(WakeType).contained, "Test");
+		Asserts.that(WakeType.getAsVariableName())Equals("Test[]");
 	}
 
 	@Test

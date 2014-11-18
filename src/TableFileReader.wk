@@ -116,7 +116,7 @@ every TableFileReader is:
 			WakeOptionalType.levels = levels;
 			WakeType.WakeOptionalType = WakeOptionalType;
 		}
-		readTextWithLengthTag(File); // read alias
+		WakeType.alias = readTextWithLengthTag(File); // read alias
 		WakeType.specialty = readTextWithLengthTag(File);
 
 		return WakeType;
