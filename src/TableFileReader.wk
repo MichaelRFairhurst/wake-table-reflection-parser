@@ -20,13 +20,14 @@ every TableFileReader is:
 
 	with public WakeClass[] addingClass = [];
 
-	with Num expectedVersion = 3;
+	with Num newestVersion = 4;
+	with Num oldestVersion = 3;
 
 	WakeClass -- readFrom(File) {
 		var Num version = File.readUnsignedChar();
 
-		if(version != expectedVersion) {
-			throw UnusableTableFileVersionException(version, 3) from ReflectionProvider;
+		if(version < oldestVersion || version > newestVersion) {
+			throw UnusableTableFileVersionException(version, newestVersion) from ReflectionProvider;
 		}
 
 		var WakeClass from ReflectionProvider;
