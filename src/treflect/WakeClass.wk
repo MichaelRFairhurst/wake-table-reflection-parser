@@ -11,6 +11,7 @@ every WakeClass is:
 
 	with public Bool isAbstract = false;
 	with public Text classname = "";
+	with public Text modulename = "";
 	with public WakeType[] needTypes = [];
 	with public WakeType[] parameters = [];
 	with public WakeType[] appliedParameters = [];

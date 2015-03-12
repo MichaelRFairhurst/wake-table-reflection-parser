@@ -22,8 +22,8 @@ every TableFileReader is:
 
 	with public WakeClass[] addingClass = [];
 
-	with Num newestVersion = 4;
-	with Num oldestVersion = 3;
+	with Num newestVersion = 5;
+	with Num oldestVersion = 5;
 
 	WakeClass -- readFrom(File) {
 		var Num version = File.readUnsignedChar();
@@ -33,6 +33,7 @@ every TableFileReader is:
 		}
 
 		var WakeClass from ReflectionProvider;
+		WakeClass.modulename = readTextWithLengthTag(File);
 		WakeClass.classname = readTextWithLengthTag(File);
 
 		if(File.readUnsignedChar() != 0) WakeClass.isAbstract = true;
