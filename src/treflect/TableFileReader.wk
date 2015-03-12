@@ -1,18 +1,20 @@
-import File;
-import WakeType;
-import WakeClass;
-import Map;
-import WakeProperty;
-import ReflectionProvider;
-import ImportFilterer;
-import WakeClassType;
-import WakeListType;
-import WakeLambdaType;
-import WakeParameterizedType;
-import WakeOptionalType;
-import Annotation;
-import AnnotationVal;
-import UnusableTableFileVersionException;
+module treflect;
+
+import io.File;
+import std.Map;
+import treflect.WakeType;
+import treflect.WakeClass;
+import treflect.WakeProperty;
+import treflect.ReflectionProvider;
+import treflect.ImportFilterer;
+import treflect.WakeClassType;
+import treflect.WakeListType;
+import treflect.WakeLambdaType;
+import treflect.WakeParameterizedType;
+import treflect.WakeOptionalType;
+import treflect.Annotation;
+import treflect.AnnotationVal;
+import treflect.UnusableTableFileVersionException;
 
 every TableFileReader is:
 

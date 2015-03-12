@@ -1,16 +1,18 @@
-import WakeType;
-import WakeProperty;
-import Map;
-import ImportFilterer;
-import WakeClass;
-import WakeListType;
-import WakeOptionalType;
-import WakeParameterizedType;
-import WakeLambdaType;
-import WakeClassType;
-import Annotation;
-import AnnotationVal;
-import UnusableTableFileVersionException;
+module treflect;
+
+import std.Map;
+import treflect.WakeType;
+import treflect.WakeProperty;
+import treflect.ImportFilterer;
+import treflect.WakeClass;
+import treflect.WakeListType;
+import treflect.WakeOptionalType;
+import treflect.WakeParameterizedType;
+import treflect.WakeLambdaType;
+import treflect.WakeClassType;
+import treflect.Annotation;
+import treflect.AnnotationVal;
+import treflect.UnusableTableFileVersionException;
 
 every ReflectionProvider is:
 

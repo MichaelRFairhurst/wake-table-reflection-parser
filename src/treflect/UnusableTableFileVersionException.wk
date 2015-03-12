@@ -1,3 +1,5 @@
+module treflect;
+
 every UnusableTableFileVersionException (an Exception) is:
 
 	needs Num expectedVersion, Num actualVersion;

@@ -1,3 +1,5 @@
+module treflect;
+
 every SpecificWakeType is:
 
 	Text -- getPureName();

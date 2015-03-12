@@ -1,3 +1,5 @@
+module treflect;
+
 every AnnotationVal is:
 
 	with public Text? = nothing;

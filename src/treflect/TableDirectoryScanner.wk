@@ -1,5 +1,7 @@
-import FilePath;
-import File;
+module treflect;
+
+import io.FilePath;
+import io.File;
 
 every TableDirectoryScanner is:
 

@@ -1,5 +1,7 @@
-import WakeType;
-import Annotation;
+module treflect;
+
+import treflect.WakeType;
+import treflect.Annotation;
 
 every WakeProperty is:
 

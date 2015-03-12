@@ -1,5 +1,7 @@
-import ImportFilterer;
-import SpecificWakeType;
+module treflect;
+
+import treflect.ImportFilterer;
+import treflect.SpecificWakeType;
 
 every WakeType is:
 

@@ -1,4 +1,6 @@
-import AnnotationVal;
+module treflect;
+
+import treflect.AnnotationVal;
 
 every Annotation is:
 
