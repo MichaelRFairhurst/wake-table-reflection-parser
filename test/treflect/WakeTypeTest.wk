@@ -1,12 +1,14 @@
-import Asserts;
-import WakeType;
-import WakeListType;
-import WakeClassType;
-import WakeOptionalType;
-import WakeLambdaType;
-import WakeParameterizedType;
-import ImportFilterer;
-import SpecificWakeType;
+module treflect;
+
+import wunit.Asserts;
+import treflect.WakeType;
+import treflect.WakeListType;
+import treflect.WakeClassType;
+import treflect.WakeOptionalType;
+import treflect.WakeLambdaType;
+import treflect.WakeParameterizedType;
+import treflect.ImportFilterer;
+import treflect.SpecificWakeType;
 
 @TestClass
 every WakeTypeTest is:

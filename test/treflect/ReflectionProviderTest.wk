@@ -1,10 +1,12 @@
-import ReflectionProvider;
-import Asserts;
-import WakeType;
-import WakeClassType;
-import WakeOptionalType;
-import WakeListType;
-import ImportFilterer;
+module treflect;
+
+import wunit.Asserts;
+import treflect.ReflectionProvider;
+import treflect.WakeType;
+import treflect.WakeClassType;
+import treflect.WakeOptionalType;
+import treflect.WakeListType;
+import treflect.ImportFilterer;
 
 @TestClass
 every ReflectionProviderTest is:
