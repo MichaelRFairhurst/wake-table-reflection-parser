@@ -5,14 +5,20 @@ import io.File;
 
 every TableDirectoryScanner is:
 
-	File[] -- scan($FilePath) {
+	File[] -- scan(FilePath) {
 		var File[] = [];
+		scan(FilePath)To(File[]);
+		return File[];
+	}
 
-		foreach($FilePath.getChildren()) {
-			if(FilePath.getPath().substr(-6) == ".table") {
-				File[].push(File from FilePath);
+	private scan(dir FilePath)To(File[]) {
+		foreach(dir.getChildren()) {
+			if(FilePath.isDirectory()) {
+				scan(FilePath)To(File[]);
+			} else {
+				if(FilePath.getPath().substr(-6) == ".table") {
+					File[].push(File from FilePath);
+				}
 			}
 		}
-
-		return File[];
 	}
