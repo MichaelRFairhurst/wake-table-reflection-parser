@@ -1,7 +1,7 @@
-PROGRAM := your-program-name
+PROGRAM := treflect
 
 # set to false or it will be linked with a main()
-EXECUTABLE := true
+EXECUTABLE := false
 
 # Include all wake libraries by default since there aren't many just yet
 LIBRARYFILES := $(wildcard lib/obj/*.o)
@@ -87,7 +87,6 @@ EXTOBJECTFILES := $(subst $(SRCDIR)/extern/js,$(OBJECTDIR),${EXTSOURCEFILES:.wk=
 EXTTESTOBJECTFILES := $(subst $(TESTDIR)/extern/js,$(OBJECTDIR),${EXTTESTFILES:.wk=.o})
 EXTTABLEFILES := $(subst $(SRCDIR)/extern/js,$(TABLEDIR),${EXTSOURCEFILES:.wk=.table})
 EXTTESTTABLEFILES := $(subst $(TESTDIR)/extern/js,$(TABLEDIR),${EXTTESTFILES:.wk=.table})
-
 
 ## ENTRY POINT ##
 all: bin/$(PROGRAM)
