@@ -7,6 +7,8 @@ import treflect.WakeClass;
 import treflect.WakeProperty;
 import treflect.ReflectionProvider;
 import treflect.ImportFilterer;
+import treflect.WakeVarDecl;
+import treflect.WakeSpecializableVarDecl;
 import treflect.WakeClassType;
 import treflect.WakeListType;
 import treflect.WakeLambdaType;
@@ -22,11 +24,11 @@ every TableFileReader is:
 
 	with public WakeClass[] addingClass = [];
 
-	with Num newestVersion = 5;
-	with Num oldestVersion = 5;
+	with Num newestVersion = 6;
+	with Num oldestVersion = 6;
 
 	WakeClass -- readFrom(File) {
-		var Num version = File.readUnsignedChar();
+		var version Num = File.readUnsignedChar();
 
 		if(version < oldestVersion || version > newestVersion) {
 			throw UnusableTableFileVersionException(version, newestVersion) from ReflectionProvider;
@@ -38,15 +40,14 @@ every TableFileReader is:
 
 		if(File.readUnsignedChar() != 0) WakeClass.isAbstract = true;
 
-		var tag Num = 0;
-		while((tag := File.readUnsignedChar()) != 0) {
-			var Text = File.read(tag); // get method name
+		var Num properties = 0;
+		while((properties -= 1) >= 0) {
+			var Text = readTextWithLengthTag(File); // get method name
 			var Text casing = readTextWithLengthTag(File); // get Casing
 			var flags Num = File.readUnsignedChar();
-			var WakeType = readType(File);
-			var WakeProperty from ReflectionProvider;
+			var WakeVarDecl = readVarDecl(File);
+			var WakeProperty(WakeVarDecl) from ReflectionProvider;
 
-			WakeProperty.WakeType = WakeType;
 			WakeProperty.name = Text;
 			WakeProperty.flags = flags;
 			WakeProperty.casing = casing.split('#');
@@ -54,15 +55,27 @@ every TableFileReader is:
 			WakeClass.properties.put(Text, WakeProperty);
 		}
 
-		while((tag := File.readUnsignedChar()) != 0) {
-			var Text = File.read(tag); // get classname
-			var Num = File.readUnsignedChar();
-			if(Num != 0) WakeClass.parentclass = Text;
-			else WakeClass.interfaces.push(Text);
+		var Num needsNum = File.readUnsignedChar();
+		while((needsNum -= 1) >= 0) {
+			var flags Num = File.readUnsignedChar();
+			var WakeSpecializableVarDecl = readSpecializableVarDecl(File);
+			var WakeProperty(WakeSpecializableVarDecl.WakeVarDecl) from ReflectionProvider;
+
+			WakeProperty.name;
 		}
 
-		// For this we need file.eof()
-		while((tag := File.readUnsignedChar()) != 0) {
+		var Num parents = File.readUnsignedChar();
+		while((parents -= 1) >= 0) {
+			var Text = readTextWithLengthTag(File); // get parent name
+			if(File.readUnsignedChar() != 0) {
+				WakeClass.parentclass = Text;
+			} else {
+				WakeClass.interfaces.push(Text);
+			}
+		}
+
+		var Num params = File.readUnsignedChar();
+		while((params -= 1) >= 0) {
 			WakeClass.parameters.push(readType(File));
 		}
 
@@ -70,6 +83,22 @@ every TableFileReader is:
 
 		return WakeClass;
 
+	}
+
+	WakeVarDecl -- readVarDecl(File) {
+		var WakeType = readType(File);
+		var WakeVarDecl(WakeType) from ReflectionProvider;
+		WakeVarDecl.shadow = File.readUnsignedChar();
+		WakeVarDecl.alias = readTextWithLengthTag(File);
+
+		return WakeVarDecl;
+	}
+
+	WakeSpecializableVarDecl -- readSpecializableVarDecl(File) {
+		var WakeVarDecl = readVarDecl(File);
+		var WakeSpecializableVarDecl(WakeVarDecl) from ReflectionProvider;
+		WakeSpecializableVarDecl.specialty = readTextWithLengthTag(File);
+		return WakeSpecializableVarDecl;
 	}
 
 	WakeType -- readType(File) {
@@ -84,44 +113,39 @@ every TableFileReader is:
 			if((File.readUnsignedChar()) != 0) {
 				WakeLambdaType.returntype = readType(File);
 			}
-			while((tag := File.readUnsignedChar()) != 0) {
-				WakeLambdaType.arguments.push(readTypeByTag(tag, File));
+			var Num args = File.readUnsignedChar();
+			while((args -= 1) >= 0) {
+				WakeLambdaType.arguments.push(readType(File));
 			}
 			WakeType.WakeLambdaType = WakeLambdaType;
 		} else if(tag == 2) {
 			var WakeClassType from ReflectionProvider;
 			WakeClassType.classname = readTextWithLengthTag(File);
-			while((tag := File.readUnsignedChar()) != 0) {
-				WakeClassType.parameters.push(readTypeByTag(tag, File));
+			WakeClassType.modulename = readTextWithLengthTag(File);
+			var Num params = File.readUnsignedChar();
+			while((params -= 1) >= 0) {
+				WakeClassType.parameters.push(readType(File));
 			}
-			File.readUnsignedChar(); // shadow
 			WakeType.WakeClassType = WakeClassType;
-		} else if(tag == 3) {
+		} else if(tag == 3 || tag == 9) {
 			var WakeParameterizedType from ReflectionProvider;
 			WakeParameterizedType.label = readTextWithLengthTag(File); // label
 			if((tag := File.readUnsignedChar()) != 0) {
-				WakeParameterizedType.upperbound = readType(File);
+				WakeParameterizedType.upperbound = readTypeByTag(tag, File);
 			}
 			if((tag := File.readUnsignedChar()) != 0) {
-				WakeParameterizedType.lowerbound = readType(File);
+				WakeParameterizedType.lowerbound = readTypeByTag(tag, File);
 			}
-			File.readUnsignedChar(); // shadow
 			WakeType.WakeParameterizedType = WakeParameterizedType;
 		} else if(tag == 7) {
 			ReflectionProvider.contained = readType(File);
-			var Num levels = File.readUnsignedChar();
 			var WakeListType from ReflectionProvider; // @Todo ctor args
-			WakeListType.levels = levels;
 			WakeType.WakeListType = WakeListType;
 		} else if(tag == 8) {
 			ReflectionProvider.contained = readType(File);
-			var Num levels = File.readUnsignedChar();
 			var WakeOptionalType from ReflectionProvider; // @Todo ctor args
-			WakeOptionalType.levels = levels;
 			WakeType.WakeOptionalType = WakeOptionalType;
 		}
-		WakeType.alias = readTextWithLengthTag(File); // read alias
-		WakeType.specialty = readTextWithLengthTag(File);
 
 		return WakeType;
 	}
@@ -135,18 +159,15 @@ every TableFileReader is:
 	Annotation[] -- getAnnotations(File) {
 		var Annotation[] = [];
 
-		while(true) {
-			var Num = File.readUnsignedChar();
-			if(Num == 0) break;
-
-			var Text name = File.read(Num);
+		var Num annotations = File.readUnsignedChar();
+		while((annotations -= 1) >= 0) {
+			var Text name = readTextWithLengthTag(File);
 			var Annotation(name) from ReflectionProvider;
 			Annotation[].push(Annotation);
 
-			while(true) {
-				Num = File.readUnsignedChar();
-				if(Num == 0) break;
-
+			var Num vals = File.readUnsignedChar();
+			while((vals -= 1) >= 0) {
+				var Num = File.readUnsignedChar();
 				var AnnotationVal from ReflectionProvider;
 				Annotation.AnnotationVal[].push(AnnotationVal);
 				if(Num == 1) {

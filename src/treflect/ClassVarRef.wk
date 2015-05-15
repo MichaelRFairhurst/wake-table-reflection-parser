@@ -1,0 +1,26 @@
+module treflect;
+
+every ClassVarRef is:
+
+	needs public Text classname,
+		public Num arrayLevels,
+		public Num shadow;
+
+	Text -- toString() {
+		var Text ret = "";
+		var Num = shadow;
+		while(Num > -1) {
+			ret += "$";
+			Num -= 1;
+		}
+
+		ret += classname;
+
+		Num = arrayLevels;
+		while(Num > -1) {
+			ret += "[]";
+			Num -= 1;
+		}
+
+		return ret;
+	}

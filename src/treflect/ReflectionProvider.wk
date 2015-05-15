@@ -1,22 +1,16 @@
 module treflect;
 
 import std.Map;
-import treflect.WakeType;
-import treflect.WakeProperty;
 import treflect.ImportFilterer;
-import treflect.WakeClass;
-import treflect.WakeListType;
-import treflect.WakeOptionalType;
-import treflect.WakeParameterizedType;
-import treflect.WakeLambdaType;
-import treflect.WakeClassType;
 import treflect.Annotation;
 import treflect.AnnotationVal;
 import treflect.UnusableTableFileVersionException;
+import treflect.ClassVarRef;
+import treflect.SpecificWakeType;
 
 every ReflectionProvider is:
 
-	provides WakeType, WakeClass, Map{Text, WakeProperty}, WakeProperty, ImportFilterer, Exception,
+	provides WakeType, WakeClass, Map{Text, WakeProperty}, ImportFilterer, Exception,
 		WakeClassType,
 		WakeOptionalType,// <- WakeOptionalType(WakeType:contained),
 		WakeListType,// <- WakeListType(WakeType:contained),
@@ -24,6 +18,11 @@ every ReflectionProvider is:
 		WakeLambdaType,
 		Annotation <- Annotation(?Text),
 		AnnotationVal,
+		ClassVarRef <- ClassVarRef(?Text, ?Num, ?Num),
+		VarRef <- VarRef(?Text?, ?ClassVarRef?),
+		WakeVarDecl <- WakeVarDecl(?WakeType, ReflectionProvider),
+		WakeSpecializableVarDecl <- WakeSpecializableVarDecl(?WakeVarDecl),
+		WakeProperty <- WakeProperty(?WakeVarDecl),
 		WakeType:contained <- {
 			var WakeType? = contained;
 			if WakeType exists {
@@ -32,6 +31,305 @@ every ReflectionProvider is:
 				throw Exception from this;
 			}
 		},
-		UnusableTableFileVersionException <- UnusableTableFileVersionException(?Num, ?Num);
+		UnusableTableFileVersionException <- UnusableTableFileVersionException(?Num, ?Num),
+		ReflectionProvider <- { return this; };
 
 	with public WakeType? contained = nothing;
+
+every WakeClass is:
+
+	needs public Map{Text, WakeProperty} properties;
+
+	with public Bool isAbstract = false;
+	with public Text classname = "";
+	with public Text modulename = "";
+	with public WakeType[] needTypes = [];
+	with public WakeType[] parameters = [];
+	with public WakeType[] appliedParameters = [];
+	with public Annotation[] = [];
+
+	with public Text? parentclass = nothing;
+	with public Text[] interfaces = [];
+
+	Text[] -- getApiImports() {
+		var Text[] = [];
+		foreach(properties.getKeys()) { // @Todo foreach as
+			var WakeProperty? = properties.get(Text);
+
+			if WakeProperty exists {
+				foreach($Text in WakeProperty.getNeededImports()) {
+
+					if(!Text[].contains($Text)) Text[].push($Text);
+				}
+			}
+		}
+
+		return Text[];
+	}
+
+every WakeProperty is:
+
+	needs public WakeVarDecl;
+	with public Text[] casing = [];
+	with public Text name = "";
+	with public Num flags = 0;
+	with public Annotation[] = [];
+
+	Text[] -- getNeededImports() {
+		return WakeVarDecl.WakeType.getNeededImports();
+	}
+
+every WakeType is:
+
+	with public Num type = 0;
+	with public Text specialty = "";
+	with public WakeClassType? = nothing;
+	with public WakeListType? = nothing;
+	with public WakeOptionalType? = nothing;
+	with public WakeLambdaType? = nothing;
+	with public WakeParameterizedType? = nothing;
+	with $SpecificWakeType? = nothing;
+
+	needs ImportFilterer;
+
+	provides Exception;
+
+	SpecificWakeType -- getSpecificType() {
+		var SpecificWakeType? = $SpecificWakeType;
+		if SpecificWakeType exists {} else {
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeClassType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeListType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeOptionalType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeLambdaType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeParameterizedType);
+		}
+
+		if SpecificWakeType exists {
+			return SpecificWakeType;
+		}
+
+		throw Exception from this;
+	}
+
+	trySetSpecificWakeType(SpecificWakeType? type) {
+		if($SpecificWakeType != nothing) {
+			return;
+		}
+
+		if type exists {
+			$SpecificWakeType = type;
+		}
+	}
+
+	Text -- getPureName() {
+		return getSpecificType().getPureName();
+	}
+
+	Text[] -- getNeededImports() {
+		return getSpecificType().getNeededImports();
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return getSpecificType().getClassVarRef();
+	}
+
+every WakeOptionalType (capable SpecificWakeType) is:
+
+	with public Num levels = 0; // optionals & lists
+	needs public WakeType:contained contained; // optionals & lists
+
+	Text -- getPureName() {
+		var Text = contained.getPureName();
+
+		if(levels != 0) Text += "?";
+
+		return Text;
+	}
+
+	Text[] -- getNeededImports() {
+		return contained.getNeededImports();
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return contained.getClassVarRef();
+	}
+
+every WakeListType (capable SpecificWakeType) is:
+
+	with public Num levels = 0; // optionals & lists
+	needs public WakeType:contained contained; // optionals & lists
+
+	Text -- getPureName() {
+		var Text = contained.getPureName();
+
+		for(var Num = 0; Num < levels; Num += 1) { // todo foreach range
+			Text += "[]";
+		}
+
+		return Text;
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		var ClassVarRef = contained.getClassVarRef();
+		ClassVarRef.arrayLevels += 1;
+		return ClassVarRef;
+	}
+
+	Text[] -- getNeededImports() {
+		return contained.getNeededImports();
+	}
+
+every WakeClassType (capable SpecificWakeType) is:
+
+	with public Text classname = "";
+	with public Text modulename = "";
+	with public WakeType[] parameters = [];
+
+	needs ImportFilterer, ReflectionProvider;
+
+	Text -- getPureName() {
+		var Text = classname;
+
+		if(parameters.getSize() > 0) {
+			var Bool first = true;
+
+			Text += '{';
+			var WakeType[] = parameters;
+			foreach(WakeType in parameters) {
+				if(!first) Text += ',';
+				first = false;
+				Text += WakeType.getPureName();
+			}
+			Text += '}';
+		}
+
+		return Text;
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return ClassVarRef (classname, 0, 0) from ReflectionProvider;
+	}
+
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+		if(!ImportFilterer.check(classname)IsAPrimitive())
+			Text[].push(classname);
+
+		if(parameters.getSize() != 0) {
+			var WakeType[] = parameters;
+			foreach(WakeType[])
+			foreach($Text in WakeType.getNeededImports()) {
+				if(ImportFilterer.check($Text)IsAPrimitive()) continue;
+				if(Text[].contains($Text)) continue;
+
+				Text[].push($Text);
+			}
+		}
+
+		return Text[];
+	}
+
+every WakeLambdaType (capable SpecificWakeType) is:
+
+	with public WakeType[] arguments = [];
+	with public WakeType? returntype = nothing;
+
+	needs ImportFilterer;
+
+	provides Exception;
+
+	Text -- getPureName() {
+		throw Exception from this;
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		throw Exception from this;
+	}
+
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+
+		var WakeType[] = arguments;
+		foreach(WakeType[])
+		foreach($Text in WakeType.getNeededImports()) {
+			if(ImportFilterer.check($Text)IsAPrimitive()) continue;
+			if(Text[].contains($Text)) continue;
+
+			Text[].push($Text);
+		}
+
+		var WakeType? = returntype;
+		if WakeType exists
+		foreach($Text in WakeType.getNeededImports()) {
+			if(ImportFilterer.check($Text)IsAPrimitive()) continue;
+			if(Text[].contains($Text)) continue;
+
+			Text[].push($Text);
+		}
+
+		return Text[];
+	}
+
+every WakeParameterizedType (capable SpecificWakeType) is:
+
+	needs ReflectionProvider;
+
+	with public Text label = "";
+	with public WakeType? upperbound = nothing;
+	with public WakeType? lowerbound = nothing;
+
+	Text -- getPureName() {
+		return label;
+	}
+
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+		return Text[];
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return ClassVarRef (label, 0, 0) from ReflectionProvider;
+	}
+
+every WakeVarDecl is:
+
+	needs public WakeType, ReflectionProvider;
+
+	with public Num shadow = 0;
+	with public Text alias = "";
+
+	provides Exception;
+
+	VarRef -- getVarRef() {
+		if(alias != "") {
+			return VarRef((cast Text?) alias, (cast ClassVarRef?) nothing) from ReflectionProvider;
+		} else {
+			var VarRef((cast Text?) nothing, (cast ClassVarRef?) WakeType.getClassVarRef()) from ReflectionProvider;
+		}
+
+		throw Exception from this;
+	}
+
+every WakeSpecializableVarDecl is:
+
+	needs public WakeVarDecl;
+	with public Text specialty = "";
+
+every VarRef is:
+
+	needs public Text? alias,
+		public $ClassVarRef?;
+
+	Text -- toString() {
+		var Text? aliascp = alias;
+		if aliascp exists {
+			return aliascp;
+		}
+
+		var ClassVarRef? = $ClassVarRef;
+		if ClassVarRef exists {
+			return ClassVarRef.toString();
+		}
+
+		return "";
+	}
