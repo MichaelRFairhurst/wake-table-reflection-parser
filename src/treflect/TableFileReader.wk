@@ -3,6 +3,7 @@ module treflect;
 import io.File;
 import std.Map;
 import treflect.WakeType;
+import treflect.VarRef;
 import treflect.WakeClass;
 import treflect.WakeProperty;
 import treflect.ReflectionProvider;
@@ -40,7 +41,7 @@ every TableFileReader is:
 
 		if(File.readUnsignedChar() != 0) WakeClass.isAbstract = true;
 
-		var Num properties = 0;
+		var Num properties = File.readUnsignedChar();
 		while((properties -= 1) >= 0) {
 			var Text = readTextWithLengthTag(File); // get method name
 			var Text casing = readTextWithLengthTag(File); // get Casing
@@ -61,7 +62,8 @@ every TableFileReader is:
 			var WakeSpecializableVarDecl = readSpecializableVarDecl(File);
 			var WakeProperty(WakeSpecializableVarDecl.WakeVarDecl) from ReflectionProvider;
 
-			WakeProperty.name;
+			WakeProperty.name = WakeProperty.WakeVarDecl.getVarRef().toString();
+			WakeProperty.Annotation[] = getAnnotations(File);
 		}
 
 		var Num parents = File.readUnsignedChar();

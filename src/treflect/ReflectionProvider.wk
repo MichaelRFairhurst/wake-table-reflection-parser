@@ -104,6 +104,7 @@ every WakeType is:
 			trySetSpecificWakeType((cast SpecificWakeType?) WakeParameterizedType);
 		}
 
+		SpecificWakeType = $SpecificWakeType;
 		if SpecificWakeType exists {
 			return SpecificWakeType;
 		}
@@ -305,9 +306,9 @@ every WakeVarDecl is:
 			return VarRef((cast Text?) alias, (cast ClassVarRef?) nothing) from ReflectionProvider;
 		} else {
 			var VarRef((cast Text?) nothing, (cast ClassVarRef?) WakeType.getClassVarRef()) from ReflectionProvider;
+			VarRef.shadow = shadow;
+			return VarRef;
 		}
-
-		throw Exception from this;
 	}
 
 every WakeSpecializableVarDecl is:
@@ -319,6 +320,7 @@ every VarRef is:
 
 	needs public Text? alias,
 		public $ClassVarRef?;
+	with public Num shadow = 0;
 
 	Text -- toString() {
 		var Text? aliascp = alias;
