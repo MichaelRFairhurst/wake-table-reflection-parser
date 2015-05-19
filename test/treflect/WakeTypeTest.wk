@@ -9,6 +9,7 @@ import treflect.WakeLambdaType;
 import treflect.WakeParameterizedType;
 import treflect.ImportFilterer;
 import treflect.SpecificWakeType;
+import treflect.ReflectionProvider;
 
 @TestClass
 every WakeTypeTest is:
@@ -44,7 +45,8 @@ every WakeTypeTest is:
 		WakeListType:classlist <- WakeListType(WakeType:class),
 		WakeOptionalType:optionalclass <- WakeOptionalType(WakeType:class),
 		WakeType:contained, //Bug!! Need to declare this
-		Exception;
+		Exception,
+		ReflectionProvider;
 
 	setClassname(WakeType, Text) {
 		var WakeClassType? = WakeType.WakeClassType;
@@ -76,27 +78,6 @@ every WakeTypeTest is:
 	}
 
 	@Test
-	~[ test .getAsVariableName() uses classname ]~(Asserts) {
-		var WakeType:class from this;
-		setClassname(WakeType, "Test");
-		Asserts.that(WakeType.getAsVariableName())Equals("Test");
-	}
-
-	@Test
-	~[ test .getAsVariableName() ignores optionals ]~(Asserts) {
-		var WakeType:optionalclass from this;
-		setClassname(getOptional(WakeType).contained, "Test");
-		Asserts.that(WakeType.getAsVariableName())Equals("Test");
-	}
-
-	@Test
-	~[ test .getAsVariableName() includes brackets ]~(Asserts) {
-		var WakeType:classlist from this;
-		setClassname(getList(WakeType).contained, "Test");
-		Asserts.that(WakeType.getAsVariableName())Equals("Test[]");
-	}
-
-	@Test
 	~[ test .getNeeededImports() uses classname ]~(Asserts) {
 		var WakeType:class from this;
 		setClassname(WakeType, "Test");
@@ -108,15 +89,15 @@ every WakeTypeTest is:
 	@Test
 	~[ test .getNeededImports() skips primitives ]~(Asserts) {
 		var WakeType:class from this;
-		setClassname(WakeType, "Num");
+		setClassname(WakeType, "lang.Num");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		setClassname(WakeType, "Text");
+		setClassname(WakeType, "lang.Text");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		setClassname(WakeType, "List");
+		setClassname(WakeType, "lang.List");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		setClassname(WakeType, "Bool");
+		setClassname(WakeType, "lang.Bool");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
-		setClassname(WakeType, "Exception");
+		setClassname(WakeType, "lang.Exception");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 	}
 
@@ -163,10 +144,7 @@ every WakeTypeTest is:
 	~[ test .getPureName on array ]~(Asserts) {
 		var WakeType:classlist from this;
 		setClassname(getList(WakeType).contained, "Test");
-		getList(WakeType).levels = 1;
 		Asserts.that(WakeType.getPureName())Equals("Test[]");
-		getList(WakeType).levels = 2;
-		Asserts.that(WakeType.getPureName())Equals("Test[][]");
 	}
 
 	@Test
@@ -189,7 +167,6 @@ every WakeTypeTest is:
 		var WakeType:classlist from this;
 		var $WakeType:class from this;
 		setClassname(getList(WakeType).contained, "Bears");
-		getList(WakeType).levels = 1;
 		setClassname($WakeType, "Beets");
 
 		getClass(getList(WakeType).contained).parameters.push($WakeType);
@@ -200,7 +177,6 @@ every WakeTypeTest is:
 	~[ test .getPureName on optional ]~(Asserts) {
 		var WakeType:optionalclass from this;
 		setClassname(getOptional(WakeType).contained, "Bears");
-		getOptional(WakeType).levels = 1;
 
 		Asserts.that(WakeType.getPureName())Equals("Bears?");
 	}
