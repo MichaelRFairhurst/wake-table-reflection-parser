@@ -136,15 +136,10 @@ every WakeType is:
 
 every WakeOptionalType (capable SpecificWakeType) is:
 
-	with public Num levels = 0; // optionals & lists
 	needs public WakeType:contained contained; // optionals & lists
 
 	Text -- getPureName() {
-		var Text = contained.getPureName();
-
-		if(levels != 0) Text += "?";
-
-		return Text;
+		return contained.getPureName() + "[]";
 	}
 
 	Text[] -- getNeededImports() {
@@ -157,17 +152,10 @@ every WakeOptionalType (capable SpecificWakeType) is:
 
 every WakeListType (capable SpecificWakeType) is:
 
-	with public Num levels = 0; // optionals & lists
 	needs public WakeType:contained contained; // optionals & lists
 
 	Text -- getPureName() {
-		var Text = contained.getPureName();
-
-		for(var Num = 0; Num < levels; Num += 1) { // todo foreach range
-			Text += "[]";
-		}
-
-		return Text;
+		return contained.getPureName() + "[]";
 	}
 
 	ClassVarRef -- getClassVarRef() {
@@ -213,8 +201,9 @@ every WakeClassType (capable SpecificWakeType) is:
 
 	Text[] -- getNeededImports() {
 		var Text[] = [];
-		if(!ImportFilterer.check(classname)IsAPrimitive())
-			Text[].push(classname);
+		var Text fqname = classname if modulename == "" else modulename + "." + classname;
+		if(!ImportFilterer.check(fqname)IsAPrimitive())
+			Text[].push(fqname);
 
 		if(parameters.getSize() != 0) {
 			var WakeType[] = parameters;
@@ -278,6 +267,7 @@ every WakeParameterizedType (capable SpecificWakeType) is:
 	with public Text label = "";
 	with public WakeType? upperbound = nothing;
 	with public WakeType? lowerbound = nothing;
+	with public Bool isArgParameterization = false;
 
 	Text -- getPureName() {
 		return label;

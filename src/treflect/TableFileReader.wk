@@ -122,8 +122,8 @@ every TableFileReader is:
 			WakeType.WakeLambdaType = WakeLambdaType;
 		} else if(tag == 2) {
 			var WakeClassType from ReflectionProvider;
-			WakeClassType.classname = readTextWithLengthTag(File);
 			WakeClassType.modulename = readTextWithLengthTag(File);
+			WakeClassType.classname = readTextWithLengthTag(File);
 			var Num params = File.readUnsignedChar();
 			while((params -= 1) >= 0) {
 				WakeClassType.parameters.push(readType(File));
@@ -131,6 +131,9 @@ every TableFileReader is:
 			WakeType.WakeClassType = WakeClassType;
 		} else if(tag == 3 || tag == 9) {
 			var WakeParameterizedType from ReflectionProvider;
+			if(tag == 9) {
+				WakeParameterizedType.isArgParameterization = true;
+			}
 			WakeParameterizedType.label = readTextWithLengthTag(File); // label
 			if((tag := File.readUnsignedChar()) != 0) {
 				WakeParameterizedType.upperbound = readTypeByTag(tag, File);
