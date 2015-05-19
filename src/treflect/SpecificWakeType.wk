@@ -1,9 +1,0 @@
-module treflect;
-
-import treflect.ClassVarRef;
-
-every SpecificWakeType is:
-
-	Text -- getPureName();
-	ClassVarRef -- getClassVarRef();
-	Text[] -- getNeededImports();

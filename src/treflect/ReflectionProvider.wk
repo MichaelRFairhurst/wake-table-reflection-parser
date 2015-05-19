@@ -6,7 +6,6 @@ import treflect.Annotation;
 import treflect.AnnotationVal;
 import treflect.UnusableTableFileVersionException;
 import treflect.ClassVarRef;
-import treflect.SpecificWakeType;
 
 every ReflectionProvider is:
 
@@ -134,6 +133,10 @@ every WakeType is:
 		return getSpecificType().getClassVarRef();
 	}
 
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return getSpecificType().getArgParameterizations();
+	}
+
 every WakeOptionalType (capable SpecificWakeType) is:
 
 	needs public WakeType:contained contained; // optionals & lists
@@ -148,6 +151,10 @@ every WakeOptionalType (capable SpecificWakeType) is:
 
 	ClassVarRef -- getClassVarRef() {
 		return contained.getClassVarRef();
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return contained.getArgParameterizations();
 	}
 
 every WakeListType (capable SpecificWakeType) is:
@@ -166,6 +173,10 @@ every WakeListType (capable SpecificWakeType) is:
 
 	Text[] -- getNeededImports() {
 		return contained.getNeededImports();
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return contained.getArgParameterizations();
 	}
 
 every WakeClassType (capable SpecificWakeType) is:
@@ -219,6 +230,16 @@ every WakeClassType (capable SpecificWakeType) is:
 		return Text[];
 	}
 
+	WakeParameterizedType[] -- getArgParameterizations() {
+		var WakeParameterizedType[] = [];
+		foreach(parameters) {
+			foreach(WakeType.getArgParameterizations()) {
+				WakeParameterizedType[].push(WakeParameterizedType);
+			}
+		}
+		return WakeParameterizedType[];
+	}
+
 every WakeLambdaType (capable SpecificWakeType) is:
 
 	with public WakeType[] arguments = [];
@@ -260,6 +281,21 @@ every WakeLambdaType (capable SpecificWakeType) is:
 		return Text[];
 	}
 
+	WakeParameterizedType[] -- getArgParameterizations() {
+		var WakeParameterizedType[] = [];
+		var $WakeType? = returntype;
+		if $WakeType exists {
+			 WakeParameterizedType[] = $WakeType.getArgParameterizations();
+		}
+
+		foreach(arguments) {
+			foreach(WakeType.getArgParameterizations()) {
+				WakeParameterizedType[].push(WakeParameterizedType);
+			}
+		}
+		return WakeParameterizedType[];
+	}
+
 every WakeParameterizedType (capable SpecificWakeType) is:
 
 	needs ReflectionProvider;
@@ -280,6 +316,10 @@ every WakeParameterizedType (capable SpecificWakeType) is:
 
 	ClassVarRef -- getClassVarRef() {
 		return ClassVarRef (label, 0, 0) from ReflectionProvider;
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return [this] if isArgParameterization else [];
 	}
 
 every WakeVarDecl is:
@@ -325,3 +365,10 @@ every VarRef is:
 
 		return "";
 	}
+
+every SpecificWakeType is:
+
+	Text -- getPureName();
+	ClassVarRef -- getClassVarRef();
+	Text[] -- getNeededImports();
+	WakeParameterizedType[] -- getArgParameterizations();
