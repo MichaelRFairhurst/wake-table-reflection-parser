@@ -142,7 +142,7 @@ every WakeOptionalType (capable SpecificWakeType) is:
 	needs public WakeType:contained contained; // optionals & lists
 
 	Text -- getPureName() {
-		return contained.getPureName() + "[]";
+		return contained.getPureName() + "?";
 	}
 
 	Text[] -- getNeededImports() {
