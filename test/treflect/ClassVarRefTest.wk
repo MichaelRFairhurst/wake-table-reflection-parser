@@ -1,0 +1,45 @@
+module treflect;
+
+import wunit.Asserts;
+import treflect.ClassVarRef;
+
+@TestClass
+every ClassVarRefTest is:
+
+	provides ClassVarRef <- ClassVarRef(?Text, ?Num, ?Num);
+
+	@Test
+	testBasicClassname(Asserts) {
+		var ClassVarRef("Test", 0, 0) from this;
+		Asserts.that(ClassVarRef.toString())Equals("Test");
+	}
+
+	@Test
+	testShadowedClassname(Asserts) {
+		var ClassVarRef("Test", 0, 1) from this;
+		Asserts.that(ClassVarRef.toString())Equals("$Test");
+	}
+
+	@Test
+	testVeryShadowedClassname(Asserts) {
+		var ClassVarRef("Test", 0, 4) from this;
+		Asserts.that(ClassVarRef.toString())Equals("$$$$Test");
+	}
+
+	@Test
+	testArrayedClassname(Asserts) {
+		var ClassVarRef("Test", 1, 0) from this;
+		Asserts.that(ClassVarRef.toString())Equals("Test[]");
+	}
+
+	@Test
+	testVeryArrayedClassname(Asserts) {
+		var ClassVarRef("Test", 4, 0) from this;
+		Asserts.that(ClassVarRef.toString())Equals("Test[][][][]");
+	}
+
+	@Test
+	testShadowedAndArrayedClassname(Asserts) {
+		var ClassVarRef("Test", 1, 1) from this;
+		Asserts.that(ClassVarRef.toString())Equals("$Test[]");
+	}
