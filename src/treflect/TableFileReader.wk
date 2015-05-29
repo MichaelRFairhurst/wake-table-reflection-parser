@@ -60,6 +60,8 @@ every TableFileReader is:
 		while((needsNum -= 1) >= 0) {
 			var flags Num = File.readUnsignedChar();
 			var WakeSpecializableVarDecl = readSpecializableVarDecl(File);
+
+			WakeClass.needTypes.push(WakeSpecializableVarDecl);
 			var WakeProperty(WakeSpecializableVarDecl.WakeVarDecl) from ReflectionProvider;
 
 			WakeProperty.name = WakeProperty.WakeVarDecl.getVarRef().toString();
