@@ -9,7 +9,7 @@ every ClassVarRef is:
 	Text -- toString() {
 		var Text ret = "";
 		var Num = shadow;
-		while(Num > 0) {
+		while Num > 0 {
 			ret += "$";
 			Num -= 1;
 		}
@@ -17,7 +17,7 @@ every ClassVarRef is:
 		ret += classname;
 
 		Num = arrayLevels;
-		while(Num > 0) {
+		while Num > 0 {
 			ret += "[]";
 			Num -= 1;
 		}

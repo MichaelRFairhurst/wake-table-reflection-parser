@@ -58,7 +58,7 @@ every WakeClass is:
 			if WakeProperty exists {
 				foreach $Text in WakeProperty.getNeededImports() {
 
-					if(!Text[].contains($Text)) Text[].push($Text);
+					if !Text[].contains($Text) then Text[].push($Text);
 				}
 			}
 		}
@@ -112,7 +112,7 @@ every WakeType is:
 	}
 
 	trySetSpecificWakeType(SpecificWakeType? type) {
-		if($SpecificWakeType != nothing) {
+		if $SpecificWakeType != nothing {
 			return;
 		}
 
@@ -190,13 +190,13 @@ every WakeClassType (capable SpecificWakeType) is:
 	Text -- getPureName() {
 		var Text = classname;
 
-		if(parameters.getSize() > 0) {
+		if parameters.getSize() > 0 {
 			var Bool first = true;
 
 			Text += '{';
 			var WakeType[] = parameters;
 			foreach WakeType in parameters {
-				if(!first) Text += ',';
+				if !first then Text += ',';
 				first = false;
 				Text += WakeType.getPureName();
 			}
@@ -213,15 +213,16 @@ every WakeClassType (capable SpecificWakeType) is:
 	Text[] -- getNeededImports() {
 		var Text[] = [];
 		var Text fqname = classname if modulename == "" else modulename + "." + classname;
-		if(!ImportFilterer.check(fqname)IsAPrimitive())
+		if !ImportFilterer.check(fqname)IsAPrimitive() {
 			Text[].push(fqname);
+		}
 
-		if(parameters.getSize() != 0) {
+		if parameters.getSize() != 0 {
 			var WakeType[] = parameters;
 			foreach WakeType[] do
 			foreach $Text in WakeType.getNeededImports() {
-				if(ImportFilterer.check($Text)IsAPrimitive()) continue;
-				if(Text[].contains($Text)) continue;
+				if ImportFilterer.check($Text)IsAPrimitive() then continue;
+				if Text[].contains($Text) then continue;
 
 				Text[].push($Text);
 			}
@@ -262,8 +263,8 @@ every WakeLambdaType (capable SpecificWakeType) is:
 		var WakeType[] = arguments;
 		foreach WakeType[] do
 		foreach $Text in WakeType.getNeededImports() {
-			if(ImportFilterer.check($Text)IsAPrimitive()) continue;
-			if(Text[].contains($Text)) continue;
+			if ImportFilterer.check($Text)IsAPrimitive() then continue;
+			if Text[].contains($Text) then continue;
 
 			Text[].push($Text);
 		}
@@ -271,8 +272,8 @@ every WakeLambdaType (capable SpecificWakeType) is:
 		var WakeType? = returntype;
 		if WakeType exists
 		foreach $Text in WakeType.getNeededImports() {
-			if(ImportFilterer.check($Text)IsAPrimitive()) continue;
-			if(Text[].contains($Text)) continue;
+			if ImportFilterer.check($Text)IsAPrimitive() then continue;
+			if Text[].contains($Text) continue;
 
 			Text[].push($Text);
 		}
@@ -330,7 +331,7 @@ every WakeVarDecl is:
 	provides Exception;
 
 	VarRef -- getVarRef() {
-		if(alias != "") {
+		if alias != "" {
 			return VarRef((cast Text?) alias, (cast ClassVarRef?) nothing) from ReflectionProvider;
 		} else {
 			var VarRef((cast Text?) nothing, (cast ClassVarRef?) WakeType.getClassVarRef()) from ReflectionProvider;

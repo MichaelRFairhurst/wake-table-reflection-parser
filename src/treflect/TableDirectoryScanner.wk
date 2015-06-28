@@ -12,11 +12,11 @@ every TableDirectoryScanner is:
 	}
 
 	private scan(dir FilePath)To(File[]) {
-		foreach(dir.getChildren()) {
-			if(FilePath.isDirectory()) {
+		foreach dir.getChildren() {
+			if FilePath.isDirectory() {
 				scan(FilePath)To(File[]);
 			} else {
-				if(FilePath.getPath().substr(-6) == ".table") {
+				if FilePath.getPath().substr(-6) == ".table" {
 					File[].push(File from FilePath);
 				}
 			}
