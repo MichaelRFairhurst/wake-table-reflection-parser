@@ -273,7 +273,7 @@ every WakeLambdaType (capable SpecificWakeType) is:
 		if WakeType exists
 		foreach $Text in WakeType.getNeededImports() {
 			if ImportFilterer.check($Text)IsAPrimitive() then continue;
-			if Text[].contains($Text) continue;
+			if Text[].contains($Text) then continue;
 
 			Text[].push($Text);
 		}
