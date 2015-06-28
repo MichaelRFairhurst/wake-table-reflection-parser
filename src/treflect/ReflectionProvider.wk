@@ -52,11 +52,11 @@ every WakeClass is:
 
 	Text[] -- getApiImports() {
 		var Text[] = [];
-		foreach(properties.getKeys()) { // @Todo foreach as
+		foreach properties.getKeys() { // @Todo foreach as
 			var WakeProperty? = properties.get(Text);
 
 			if WakeProperty exists {
-				foreach($Text in WakeProperty.getNeededImports()) {
+				foreach $Text in WakeProperty.getNeededImports() {
 
 					if(!Text[].contains($Text)) Text[].push($Text);
 				}
@@ -195,7 +195,7 @@ every WakeClassType (capable SpecificWakeType) is:
 
 			Text += '{';
 			var WakeType[] = parameters;
-			foreach(WakeType in parameters) {
+			foreach WakeType in parameters {
 				if(!first) Text += ',';
 				first = false;
 				Text += WakeType.getPureName();
@@ -218,8 +218,8 @@ every WakeClassType (capable SpecificWakeType) is:
 
 		if(parameters.getSize() != 0) {
 			var WakeType[] = parameters;
-			foreach(WakeType[])
-			foreach($Text in WakeType.getNeededImports()) {
+			foreach WakeType[] do
+			foreach $Text in WakeType.getNeededImports() {
 				if(ImportFilterer.check($Text)IsAPrimitive()) continue;
 				if(Text[].contains($Text)) continue;
 
@@ -232,10 +232,9 @@ every WakeClassType (capable SpecificWakeType) is:
 
 	WakeParameterizedType[] -- getArgParameterizations() {
 		var WakeParameterizedType[] = [];
-		foreach(parameters) {
-			foreach(WakeType.getArgParameterizations()) {
-				WakeParameterizedType[].push(WakeParameterizedType);
-			}
+		foreach parameters do
+		foreach WakeType.getArgParameterizations() {
+			WakeParameterizedType[].push(WakeParameterizedType);
 		}
 		return WakeParameterizedType[];
 	}
@@ -261,8 +260,8 @@ every WakeLambdaType (capable SpecificWakeType) is:
 		var Text[] = [];
 
 		var WakeType[] = arguments;
-		foreach(WakeType[])
-		foreach($Text in WakeType.getNeededImports()) {
+		foreach WakeType[] do
+		foreach $Text in WakeType.getNeededImports() {
 			if(ImportFilterer.check($Text)IsAPrimitive()) continue;
 			if(Text[].contains($Text)) continue;
 
@@ -271,7 +270,7 @@ every WakeLambdaType (capable SpecificWakeType) is:
 
 		var WakeType? = returntype;
 		if WakeType exists
-		foreach($Text in WakeType.getNeededImports()) {
+		foreach $Text in WakeType.getNeededImports() {
 			if(ImportFilterer.check($Text)IsAPrimitive()) continue;
 			if(Text[].contains($Text)) continue;
 
@@ -288,10 +287,9 @@ every WakeLambdaType (capable SpecificWakeType) is:
 			 WakeParameterizedType[] = $WakeType.getArgParameterizations();
 		}
 
-		foreach(arguments) {
-			foreach(WakeType.getArgParameterizations()) {
-				WakeParameterizedType[].push(WakeParameterizedType);
-			}
+		foreach arguments do
+		foreach WakeType.getArgParameterizations() {
+			WakeParameterizedType[].push(WakeParameterizedType);
 		}
 		return WakeParameterizedType[];
 	}
