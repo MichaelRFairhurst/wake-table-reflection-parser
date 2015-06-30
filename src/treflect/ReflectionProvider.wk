@@ -66,6 +66,14 @@ every WakeClass is:
 		return Text[];
 	}
 
+	Text -- getFQClassname() {
+		if(modulename == "") {
+			return classname;
+		}
+
+		return modulename + "." + classname;
+	}
+
 every WakeProperty is:
 
 	needs public WakeVarDecl;
@@ -238,6 +246,14 @@ every WakeClassType (capable SpecificWakeType) is:
 			}
 		}
 		return WakeParameterizedType[];
+	}
+
+	Text -- getFQClassname() {
+		if(modulename == "") {
+			return classname;
+		}
+
+		return modulename + "." + classname;
 	}
 
 every WakeLambdaType (capable SpecificWakeType) is:
