@@ -29,7 +29,7 @@ every TableFileReader is:
 	with Num oldestVersion = 6;
 
 	WakeClass -- readFrom(File) {
-		var version Num = File.readUnsignedChar();
+		var version = File.readUnsignedChar();
 
 		if version < oldestVersion || version > newestVersion {
 			throw UnusableTableFileVersionException(version, newestVersion) from ReflectionProvider;
@@ -44,8 +44,8 @@ every TableFileReader is:
 		var Num properties = File.readUnsignedChar();
 		while (properties -= 1) >= 0 {
 			var Text = readTextWithLengthTag(File); // get method name
-			var Text casing = readTextWithLengthTag(File); // get Casing
-			var flags Num = File.readUnsignedChar();
+			var casing = readTextWithLengthTag(File); // get Casing
+			var flags = File.readUnsignedChar();
 			var WakeVarDecl = readVarDecl(File);
 			var WakeProperty(WakeVarDecl) from ReflectionProvider;
 
@@ -56,9 +56,9 @@ every TableFileReader is:
 			WakeClass.properties.put(Text, WakeProperty);
 		}
 
-		var Num needsNum = File.readUnsignedChar();
+		var needsNum = File.readUnsignedChar();
 		while (needsNum -= 1) >= 0 {
-			var flags Num = File.readUnsignedChar();
+			var flags = File.readUnsignedChar();
 			var WakeSpecializableVarDecl = readSpecializableVarDecl(File);
 
 			WakeClass.needTypes.push(WakeSpecializableVarDecl);
@@ -168,7 +168,7 @@ every TableFileReader is:
 
 		var Num annotations = File.readUnsignedChar();
 		while (annotations -= 1) >= 0 {
-			var Text name = readTextWithLengthTag(File);
+			var name = readTextWithLengthTag(File);
 			var Annotation(name) from ReflectionProvider;
 			Annotation[].push(Annotation);
 

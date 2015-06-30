@@ -191,7 +191,7 @@ every WakeClassType (capable SpecificWakeType) is:
 		var Text = classname;
 
 		if parameters.getSize() > 0 {
-			var Bool first = true;
+			var first = true;
 
 			Text += '{';
 			var WakeType[] = parameters;
@@ -212,7 +212,7 @@ every WakeClassType (capable SpecificWakeType) is:
 
 	Text[] -- getNeededImports() {
 		var Text[] = [];
-		var Text fqname = classname if modulename == "" else modulename + "." + classname;
+		var fqname = classname if modulename == "" else modulename + "." + classname;
 		if !ImportFilterer.check(fqname)IsAPrimitive() {
 			Text[].push(fqname);
 		}
@@ -352,7 +352,7 @@ every VarRef is:
 	with public Num shadow = 0;
 
 	Text -- toString() {
-		var Text? aliascp = alias;
+		var aliascp = alias;
 		if aliascp exists {
 			return aliascp;
 		}

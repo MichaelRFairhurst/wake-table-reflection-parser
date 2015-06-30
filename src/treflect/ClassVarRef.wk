@@ -7,7 +7,7 @@ every ClassVarRef is:
 		public Num shadow;
 
 	Text -- toString() {
-		var Text ret = "";
+		var ret = "";
 		var Num = shadow;
 		while Num > 0 {
 			ret += "$";
