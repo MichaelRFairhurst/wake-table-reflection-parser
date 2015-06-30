@@ -52,8 +52,8 @@ every WakeClass is:
 
 	Text[] -- getApiImports() {
 		var Text[] = [];
-		foreach properties.getKeys() { // @Todo foreach as
-			var WakeProperty? = properties.get(Text);
+		foreach property in properties.getKeys() {
+			var WakeProperty? = properties.get(property);
 
 			if WakeProperty exists {
 				foreach $Text in WakeProperty.getNeededImports() {
