@@ -6,7 +6,7 @@ every ClassVarRef is:
 		public Num arrayLevels,
 		public Num shadow;
 
-	Text -- toString() {
+	Text -- toText() {
 		var ret = "";
 		var Num = shadow;
 		while Num > 0 {

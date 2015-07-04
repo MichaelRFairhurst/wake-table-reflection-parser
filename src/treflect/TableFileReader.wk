@@ -64,7 +64,7 @@ every TableFileReader is:
 			WakeClass.needTypes.push(WakeSpecializableVarDecl);
 			var WakeProperty(WakeSpecializableVarDecl.WakeVarDecl) from ReflectionProvider;
 
-			WakeProperty.name = WakeProperty.WakeVarDecl.getVarRef().toString();
+			WakeProperty.name = WakeProperty.WakeVarDecl.getVarRef().toText();
 			WakeProperty.Annotation[] = getAnnotations(File);
 		}
 

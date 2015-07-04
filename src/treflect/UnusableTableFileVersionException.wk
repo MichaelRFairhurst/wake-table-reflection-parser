@@ -5,5 +5,5 @@ every UnusableTableFileVersionException (an Exception) is:
 	needs Num expectedVersion, Num actualVersion;
 
 	Text -- getMessage() {
-		return actualVersion.toString() + " is not a usable table file version. Expected " + expectedVersion.toString();
+		return actualVersion.toText() + " is not a usable table file version. Expected " + expectedVersion.toText();
 	}
