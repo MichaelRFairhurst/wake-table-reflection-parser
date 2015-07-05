@@ -99,6 +99,8 @@ every WakeTypeTest is:
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 		setClassname(WakeType, "lang.Exception");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
+		setClassname(WakeType, "lang.Char");
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 	}
 
 	@Test
