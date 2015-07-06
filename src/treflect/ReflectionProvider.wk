@@ -17,7 +17,7 @@ every ReflectionProvider is:
 		WakeLambdaType,
 		Annotation <- Annotation(?Text),
 		AnnotationVal,
-		ClassVarRef <- ClassVarRef(?Text, ?Num, ?Num),
+		ClassVarRef <- ClassVarRef(?Text, ?Int, ?Int),
 		VarRef <- VarRef(?Text?, ?ClassVarRef?),
 		WakeVarDecl <- WakeVarDecl(?WakeType, ReflectionProvider),
 		WakeSpecializableVarDecl <- WakeSpecializableVarDecl(?WakeVarDecl),
@@ -30,7 +30,7 @@ every ReflectionProvider is:
 				throw Exception from this;
 			}
 		},
-		UnusableTableFileVersionException <- UnusableTableFileVersionException(?Num, ?Num),
+		UnusableTableFileVersionException <- UnusableTableFileVersionException(?Int, ?Int),
 		ReflectionProvider <- { return this; };
 
 	with public WakeType? contained = nothing;
@@ -79,7 +79,7 @@ every WakeProperty is:
 	needs public WakeVarDecl;
 	with public Text[] casing = [];
 	with public Text name = "";
-	with public Num flags = 0;
+	with public Int flags = 0;
 	with public Annotation[] = [];
 
 	Text[] -- getNeededImports() {
@@ -88,7 +88,7 @@ every WakeProperty is:
 
 every WakeType is:
 
-	with public Num type = 0;
+	with public Int type = 0;
 	with public Text specialty = "";
 	with public WakeClassType? = nothing;
 	with public WakeListType? = nothing;
@@ -341,7 +341,7 @@ every WakeVarDecl is:
 
 	needs public WakeType, ReflectionProvider;
 
-	with public Num shadow = 0;
+	with public Int shadow = 0;
 	with public Text alias = "";
 
 	provides Exception;
@@ -365,7 +365,7 @@ every VarRef is:
 
 	needs public Text? alias,
 		public $ClassVarRef?;
-	with public Num shadow = 0;
+	with public Int shadow = 0;
 
 	Text -- toText() {
 		var aliascp = alias;

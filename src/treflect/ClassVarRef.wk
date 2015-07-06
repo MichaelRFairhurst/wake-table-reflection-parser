@@ -3,23 +3,23 @@ module treflect;
 every ClassVarRef is:
 
 	needs public Text classname,
-		public Num arrayLevels,
-		public Num shadow;
+		public Int arrayLevels,
+		public Int shadow;
 
 	Text -- toText() {
 		var ret = "";
-		var Num = shadow;
-		while Num > 0 {
+		var Int = shadow;
+		while Int > 0 {
 			ret += "$";
-			Num -= 1;
+			Int -= 1;
 		}
 
 		ret += classname;
 
-		Num = arrayLevels;
-		while Num > 0 {
+		Int = arrayLevels;
+		while Int > 0 {
 			ret += "[]";
-			Num -= 1;
+			Int -= 1;
 		}
 
 		return ret;
