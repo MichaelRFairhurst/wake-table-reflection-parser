@@ -6,7 +6,7 @@ import treflect.ClassVarRef;
 @TestClass
 every ClassVarRefTest is:
 
-	provides ClassVarRef <- ClassVarRef(?Text, ?Num, ?Num);
+	provides ClassVarRef <- ClassVarRef(?Text, ?Int, ?Int);
 
 	@Test
 	testBasicClassname(Asserts) {
