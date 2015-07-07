@@ -3,5 +3,5 @@ module treflect;
 every ImportFilterer is:
 
 	Bool -- check(Text)IsAPrimitive() {
-		return Text == "lang.Num" || Text == "lang.Bool" || Text == "lang.List" || Text == "lang.Text" || Text == "lang.Exception" || Text == "lang.Char";
+		return Text == "lang.Num" || Text == "lang.Bool" || Text == "lang.List" || Text == "lang.Text" || Text == "lang.Exception" || Text == "lang.Char" || Text == "lang.Int";
 	}

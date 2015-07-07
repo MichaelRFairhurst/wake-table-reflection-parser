@@ -89,6 +89,8 @@ every WakeTypeTest is:
 	@Test
 	~[ test .getNeededImports() skips primitives ]~(Asserts) {
 		var WakeType:class from this;
+		setClassname(WakeType, "lang.Int");
+		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 		setClassname(WakeType, "lang.Num");
 		Asserts.that(WakeType.getNeededImports().getSize())Equals(0);
 		setClassname(WakeType, "lang.Text");
