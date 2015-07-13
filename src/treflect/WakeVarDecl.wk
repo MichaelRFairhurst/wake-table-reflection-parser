@@ -1,0 +1,25 @@
+module treflect;
+
+import treflect.WakeType;
+import treflect.ReflectionProvider;
+import treflect.ClassVarRef;
+import treflect.VarRef;
+
+every WakeVarDecl is:
+
+	needs public WakeType, ReflectionProvider;
+
+	with public Int shadow = 0;
+	with public Text alias = "";
+
+	provides Exception;
+
+	VarRef -- getVarRef() {
+		if alias != "" {
+			return VarRef((cast Text?) alias, (cast ClassVarRef?) nothing) from ReflectionProvider;
+		} else {
+			var VarRef((cast Text?) nothing, (cast ClassVarRef?) WakeType.getClassVarRef()) from ReflectionProvider;
+			VarRef.shadow = shadow;
+			return VarRef;
+		}
+	}

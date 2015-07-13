@@ -1,0 +1,26 @@
+module treflect;
+
+import treflect.SpecificWakeType;
+import treflect.WakeType;
+import treflect.WakeParameterizedType;
+import treflect.ClassVarRef;
+
+every WakeOptionalType (capable SpecificWakeType) is:
+
+	needs public WakeType:contained contained; // optionals & lists
+
+	Text -- getPureName() {
+		return contained.getPureName() + "?";
+	}
+
+	Text[] -- getNeededImports() {
+		return contained.getNeededImports();
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return contained.getClassVarRef();
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return contained.getArgParameterizations();
+	}

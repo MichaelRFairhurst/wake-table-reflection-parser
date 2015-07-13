@@ -1,0 +1,62 @@
+module treflect;
+
+import treflect.SpecificWakeType;
+import treflect.WakeType;
+import treflect.ClassVarRef;
+import treflect.ImportFilterer;
+import treflect.WakeParameterizedType;
+
+every WakeLambdaType (capable SpecificWakeType) is:
+
+	with public WakeType[] arguments = [];
+	with public WakeType? returntype = nothing;
+
+	needs ImportFilterer;
+
+	provides Exception;
+
+	Text -- getPureName() {
+		throw Exception from this;
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		throw Exception from this;
+	}
+
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+
+		var WakeType[] = arguments;
+		foreach WakeType[] do
+		foreach $Text in WakeType.getNeededImports() {
+			if ImportFilterer.check($Text)IsAPrimitive() then continue;
+			if Text[].contains($Text) then continue;
+
+			Text[].push($Text);
+		}
+
+		var WakeType? = returntype;
+		if WakeType exists
+		foreach $Text in WakeType.getNeededImports() {
+			if ImportFilterer.check($Text)IsAPrimitive() then continue;
+			if Text[].contains($Text) then continue;
+
+			Text[].push($Text);
+		}
+
+		return Text[];
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		var WakeParameterizedType[] = [];
+		var $WakeType? = returntype;
+		if $WakeType exists {
+			 WakeParameterizedType[] = $WakeType.getArgParameterizations();
+		}
+
+		foreach arguments do
+		foreach WakeType.getArgParameterizations() {
+			WakeParameterizedType[].push(WakeParameterizedType);
+		}
+		return WakeParameterizedType[];
+	}

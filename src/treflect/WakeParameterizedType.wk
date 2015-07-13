@@ -1,0 +1,33 @@
+module treflect;
+
+import treflect.SpecificWakeType;
+import treflect.ReflectionProvider;
+import treflect.WakeType;
+import treflect.ClassVarRef;
+import treflect.WakeParameterizedType;
+
+every WakeParameterizedType (capable SpecificWakeType) is:
+
+	needs ReflectionProvider;
+
+	with public Text label = "";
+	with public WakeType? upperbound = nothing;
+	with public WakeType? lowerbound = nothing;
+	with public Bool isArgParameterization = false;
+
+	Text -- getPureName() {
+		return label;
+	}
+
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+		return Text[];
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return ClassVarRef (label, 0, 0) from ReflectionProvider;
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return [this] if isArgParameterization else [];
+	}

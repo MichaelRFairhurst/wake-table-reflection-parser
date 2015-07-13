@@ -1,0 +1,78 @@
+module treflect;
+
+import treflect.SpecificWakeType;
+import treflect.WakeType;
+import treflect.ReflectionProvider;
+import treflect.ClassVarRef;
+import treflect.WakeParameterizedType;
+import treflect.ImportFilterer;
+
+every WakeClassType (capable SpecificWakeType) is:
+
+	with public Text classname = "";
+	with public Text modulename = "";
+	with public WakeType[] parameters = [];
+
+	needs ImportFilterer, ReflectionProvider;
+
+	Text -- getPureName() {
+		var Text = classname;
+
+		if parameters.getSize() > 0 {
+			var first = true;
+
+			Text += '{';
+			var WakeType[] = parameters;
+			foreach WakeType in parameters {
+				if !first then Text += ',';
+				first = false;
+				Text += WakeType.getPureName();
+			}
+			Text += '}';
+		}
+
+		return Text;
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return ClassVarRef (classname, 0, 0) from ReflectionProvider;
+	}
+
+	Text[] -- getNeededImports() {
+		var Text[] = [];
+		var fqname = classname if modulename == "" else modulename + "." + classname;
+		if !ImportFilterer.check(fqname)IsAPrimitive() {
+			Text[].push(fqname);
+		}
+
+		if parameters.getSize() != 0 {
+			var WakeType[] = parameters;
+			foreach WakeType[] do
+			foreach $Text in WakeType.getNeededImports() {
+				if ImportFilterer.check($Text)IsAPrimitive() then continue;
+				if Text[].contains($Text) then continue;
+
+				Text[].push($Text);
+			}
+		}
+
+		return Text[];
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		var WakeParameterizedType[] = [];
+		foreach parameters do
+		foreach WakeType.getArgParameterizations() {
+			WakeParameterizedType[].push(WakeParameterizedType);
+		}
+		return WakeParameterizedType[];
+	}
+
+	Text -- getFQClassname() {
+		if(modulename == "") {
+			return classname;
+		}
+
+		return modulename + "." + classname;
+	}
+

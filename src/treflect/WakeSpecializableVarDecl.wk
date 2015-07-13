@@ -1,0 +1,9 @@
+module treflect;
+
+import treflect.WakeVarDecl;
+
+every WakeSpecializableVarDecl is:
+
+	needs public WakeVarDecl;
+	with public Text specialty = "";
+

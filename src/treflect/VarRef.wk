@@ -1,0 +1,23 @@
+module treflect;
+
+import treflect.ClassVarRef;
+
+every VarRef is:
+
+	needs public Text? alias,
+		public $ClassVarRef?;
+	with public Int shadow = 0;
+
+	Text -- toText() {
+		var aliascp = alias;
+		if aliascp exists {
+			return aliascp;
+		}
+
+		var ClassVarRef? = $ClassVarRef;
+		if ClassVarRef exists {
+			return ClassVarRef.toText();
+		}
+
+		return "";
+	}

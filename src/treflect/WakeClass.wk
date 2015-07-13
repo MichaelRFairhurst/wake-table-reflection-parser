@@ -1,0 +1,69 @@
+module treflect;
+
+import treflect.WakeClassType;
+import treflect.WakeListType;
+import treflect.WakeOptionalType;
+import treflect.WakeLambdaType;
+import treflect.WakeParameterizedType;
+import treflect.SpecificWakeType;
+import treflect.ImportFilterer;
+import treflect.ClassVarRef;
+
+every WakeType is:
+
+	with public Int type = 0;
+	with public Text specialty = "";
+	with public WakeClassType? = nothing;
+	with public WakeListType? = nothing;
+	with public WakeOptionalType? = nothing;
+	with public WakeLambdaType? = nothing;
+	with public WakeParameterizedType? = nothing;
+	with $SpecificWakeType? = nothing;
+
+	needs ImportFilterer;
+
+	provides Exception;
+
+	SpecificWakeType -- getSpecificType() {
+		var SpecificWakeType? = $SpecificWakeType;
+		if SpecificWakeType exists {} else {
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeClassType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeListType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeOptionalType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeLambdaType);
+			trySetSpecificWakeType((cast SpecificWakeType?) WakeParameterizedType);
+		}
+
+		SpecificWakeType = $SpecificWakeType;
+		if SpecificWakeType exists {
+			return SpecificWakeType;
+		}
+
+		throw Exception from this;
+	}
+
+	trySetSpecificWakeType(SpecificWakeType? type) {
+		if $SpecificWakeType != nothing {
+			return;
+		}
+
+		if type exists {
+			$SpecificWakeType = type;
+		}
+	}
+
+	Text -- getPureName() {
+		return getSpecificType().getPureName();
+	}
+
+	Text[] -- getNeededImports() {
+		return getSpecificType().getNeededImports();
+	}
+
+	ClassVarRef -- getClassVarRef() {
+		return getSpecificType().getClassVarRef();
+	}
+
+	WakeParameterizedType[] -- getArgParameterizations() {
+		return getSpecificType().getArgParameterizations();
+	}

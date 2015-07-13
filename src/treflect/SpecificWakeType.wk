@@ -1,0 +1,11 @@
+module treflect;
+
+import treflect.ClassVarRef;
+import treflect.WakeParameterizedType;
+
+every SpecificWakeType is:
+
+	Text -- getPureName();
+	ClassVarRef -- getClassVarRef();
+	Text[] -- getNeededImports();
+	WakeParameterizedType[] -- getArgParameterizations();

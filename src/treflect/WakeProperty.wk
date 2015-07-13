@@ -1,0 +1,17 @@
+module treflect;
+
+import treflect.Annotation;
+import treflect.WakeVarDecl;
+import treflect.WakeType;
+
+every WakeProperty is:
+
+	needs public WakeVarDecl;
+	with public Text[] casing = [];
+	with public Text name = "";
+	with public Int flags = 0;
+	with public Annotation[] = [];
+
+	Text[] -- getNeededImports() {
+		return WakeVarDecl.WakeType.getNeededImports();
+	}
